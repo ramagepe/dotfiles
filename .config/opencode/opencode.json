@@ -1,0 +1,132 @@
+{
+  "$schema": "https://opencode.ai/config.json",
+  "command": {
+    "notify": {
+      "template": ".",
+      "description": "Show notification channels status"
+    },
+    "notify-on": {
+      "template": ".",
+      "description": "Enable all notification channels"
+    },
+    "notify-off": {
+      "template": ".",
+      "description": "Disable all notification channels"
+    },
+    "notify-desktop-on": {
+      "template": ".",
+      "description": "Enable desktop notifications"
+    },
+    "notify-desktop-off": {
+      "template": ".",
+      "description": "Disable desktop notifications"
+    },
+    "notify-ntfy-on": {
+      "template": ".",
+      "description": "Enable ntfy.sh push notifications"
+    },
+    "notify-ntfy-off": {
+      "template": ".",
+      "description": "Disable ntfy.sh push notifications"
+    },
+    "notify-test": {
+      "template": ".",
+      "description": "Send a test notification through all active channels"
+    }
+  },
+  "mcp": {
+    "linear": {
+      "enabled": true,
+      "command": [
+        "npx",
+        "-y",
+        "@mseep/linear-mcp"
+      ],
+      "type": "local",
+      "environment": {
+        "LINEAR_API_KEY": "PLACEHOLDER_LINEAR_API_KEY"
+      }
+    },
+    "mercadopago-mcp-server": {
+      "command": [
+        "npx",
+        "-y",
+        "mcp-remote",
+        "https://mcp.mercadopago.com/mcp",
+        "--header",
+        "Authorization:${AUTH_HEADER}"
+      ],
+      "type": "local",
+      "environment": {
+        "AUTH_HEADER": "PLACEHOLDER_MERCADOPAGO_BEARER_TOKEN"
+      }
+    },
+    "aws-knowledge-mcp-server": {
+      "url": "https://knowledge-mcp.global.api.aws",
+      "type": "remote",
+    },
+    "awslabs.aws-pricing-mcp-server": {
+      "command": [
+        "uvx",
+        "awslabs.aws-pricing-mcp-server@latest"
+      ],
+      "environment": {
+        "FASTMCP_LOG_LEVEL": "ERROR",
+        "AWS_PROFILE": "instacheck",
+        "AWS_REGION": "sa-east-1"
+      },
+      "type": "local"
+    },
+    "pulumi": {
+      "type": "remote",
+      "url": "https://mcp.ai.pulumi.com/mcp",
+      "oauth": {}
+    }
+  },
+  "autoupdate": false,
+  "permission": {
+    "bash": {
+      "*": "allow",
+      "git reset --hard *": "deny",
+      "git reset --hard": "deny",
+      "git checkout -- *": "deny",
+      "git checkout .": "deny",
+      "git restore *": "deny",
+      "git restore .": "deny",
+      "git clean *": "deny",
+      "git clean": "deny",
+      "git push --force *": "deny",
+      "git push --force": "deny",
+      "git push -f *": "deny",
+      "git push -f": "deny",
+      "git push * --force *": "deny",
+      "git push * -f *": "deny",
+      "git push * --force-with-lease *": "ask",
+      "git push * --force-with-lease": "ask",
+      "git rebase *": "ask",
+      "git branch -D *": "ask",
+      "git stash drop *": "ask",
+      "git stash drop": "ask",
+      "git stash clear": "deny",
+      "git reflog expire *": "deny",
+      "git reflog delete *": "deny",
+      "git gc --prune*": "ask",
+      "rm -rf *": "deny",
+      "rm -r *": "deny",
+      "rm -f *": "ask",
+      "rm *": "ask",
+      "sudo *": "deny",
+      "chmod *": "ask",
+      "chown *": "ask",
+      "mv *": "ask",
+      "kill *": "ask",
+      "pkill *": "ask",
+      "killall *": "ask",
+      "dd *": "deny",
+      "mkfs *": "deny",
+      "fdisk *": "deny",
+      "> *": "deny",
+      "truncate *": "deny"
+    }
+  }
+}

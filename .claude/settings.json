@@ -1,0 +1,18 @@
+{
+  "permissions": {
+    "allow": [
+      "mcp__pencil"
+    ]
+  },
+  "model": "opus",
+  "enabledPlugins": {
+    "cloud-infrastructure@claude-code-workflows": true,
+    "deployment-strategies@claude-code-workflows": true,
+    "deployment-validation@claude-code-workflows": true,
+    "cicd-automation@claude-code-workflows": true,
+    "unit-testing@claude-code-workflows": true,
+    "code-review-ai@claude-code-workflows": true,
+    "pyright-lsp@claude-plugins-official": true
+  },
+  "alwaysThinkingEnabled": true
+}

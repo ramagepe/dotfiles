@@ -1,0 +1,57 @@
+# yadm gitignore - protect secrets and exclude noise
+
+# === SECRETS (NEVER commit) ===
+.secrets
+.env
+.env.*
+
+# === Opencode backups and deps ===
+.config/opencode/*.bak.*
+.config/opencode/node_modules/
+.config/opencode/bun.lock
+.config/opencode/package.json
+
+# === Claude state (ephemeral, lots of cache/stats) ===
+.claude.json
+
+# === Claude internal dirs (sessions, cache, telemetry) ===
+.claude/backups/
+.claude/cache/
+.claude/debug/
+.claude/downloads/
+.claude/history.jsonl
+.claude/ide/
+.claude/mcp-needs-auth-cache.json
+.claude/paste-cache/
+.claude/plugins/
+.claude/projects/
+.claude/session-env/
+.claude/shell-snapshots/
+.claude/stats-cache.json
+.claude/statsig/
+.claude/telemetry/
+.claude/todos/
+.claude/.credentials.json
+
+# === Nvim state/lazy lock (regenerated) ===
+.config/nvim/lazy-lock.json
+.config/nvim/.luarc.json
+
+# === Omarchy runtime state ===
+.config/omarchy/current/
+
+# === General noise ===
+.cache/
+.local/state/
+.local/share/
+!.local/share/yadm/
+.mozilla/
+.zen/
+.npm/
+.nvm/
+.cargo/
+.rustup/
+node_modules/
+__pycache__/
+*.pyc
+.DS_Store

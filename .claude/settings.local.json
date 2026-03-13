@@ -1,0 +1,14 @@
+{
+  "permissions": {
+    "allow": [
+      "mcp__linear-server__list_issues",
+      "WebSearch",
+      "WebFetch(domain:github.com)",
+      "Bash(ffmpeg:*)",
+      "Bash(pacman -Q:*)",
+      "Bash(yay -Q:*)"
+    ],
+    "deny": [],
+    "ask": []
+  }
+}

@@ -1,0 +1,20 @@
+[alias]
+	co = checkout
+	br = branch
+	ci = commit
+	st = status
+[pull]
+	rebase = true
+[init]
+	defaultBranch = master
+[user]
+	name = ramagepe
+	email = ramagarciapedrosa@gmail.com
+[coderabbit]
+	machineId = cli/884b49d71b1141549e76f899253b067d
+[credential "https://github.com"]
+	helper = 
+	helper = !/usr/bin/gh auth git-credential
+[credential "https://gist.github.com"]
+	helper = 
+	helper = !/usr/bin/gh auth git-credential
