@@ -99,13 +99,14 @@
 !/.agents/skills
 
 # ============================== ~/.local/bin =======================
-# Sólo los dos scripts propios. El resto son 240 MB de binarios.
+# Sólo los scripts propios. El resto son 240 MB de binarios.
 !/.local
 /.local/*
 !/.local/bin
 /.local/bin/*
 !/.local/bin/omarchy-brightness-ddc
 !/.local/bin/tmux-smooth-zoom
+!/.local/bin/monitor-external-toggle
 
 # ============================== Cortes transversales ===============
 # Valen dentro de cualquier directorio habilitado arriba.

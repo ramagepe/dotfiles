@@ -4,9 +4,53 @@
 # de `yadm config local.class`. NO editar local.conf directamente: se pisa.
 # Editar SIEMPRE este archivo (local.conf##class.laptop) y correr `yadm alt`.
 
+# ── Pantallas ────────────────────────────────────────────────────────────────
+# El panel interno es un 1920x1080 de 15.6" (~141 PPI) y el BenQ GW2780 que
+# entra por HDMI es un 1920x1080 de 27": ninguno de los dos es retina-class, asi
+# que los dos van a escala 1. monitors.conf trae `auto` (que le asigna 1.5 al
+# interno) y GDK_SCALE=2, pensados para el monitor del escritorio; como este
+# archivo se sourcea despues, las dos lineas de abajo los pisan.
+#
+# Con escalas distintas en cada pantalla las ventanas cambiaban de tamaño al
+# pasar de una a otra: 1x en ambas lo evita y ademas no usa escalado fraccional.
+env = GDK_SCALE,1
+
+# Regla general, para cualquier pantalla que no este contemplada abajo.
+monitor = , preferred, auto, 1
+
+# Layout fijo del puesto de trabajo: el BenQ va a la DERECHA de la notebook.
+# Con `auto` la posicion depende del orden en que se activan los monitores, asi
+# que al ciclar los modos de proyeccion (solo notebook -> dual, solo HDMI ->
+# dual) el BenQ se pasaba solo al lado izquierdo y el mouse cruzaba al reves.
+monitor = eDP-1, 1920x1080@60, 0x0, 1
+monitor = HDMI-A-1, 1920x1080@60, 1920x0, 1
+
+# Tercer modo de proyeccion: "solo notebook" (apaga los externos). Completa la
+# familia que ya trae Omarchy en utilities.conf:
+#   SUPER+CTRL+Delete        -> solo externo (apaga el panel interno)
+#   SUPER+CTRL+ALT+Delete    -> espejo
+#   SUPER+CTRL+SHIFT+Delete  -> solo notebook  (este)
+# El bind vive aca y no en bindings.conf porque en el escritorio no hay panel
+# interno al cual volver.
+bindd = SUPER SHIFT CTRL, Delete, Toggle external displays, exec, monitor-external-toggle toggle
+
+# "Solo notebook" es un modo temporal: se limpia al iniciar sesion para no
+# arrancar nunca con un monitor apagado sin darse cuenta.
+exec-once = $HOME/.local/bin/monitor-external-toggle reset
+
 # Brillo: la notebook tiene backlight interno y Omarchy ya lo maneja con las
 # teclas Fn por defecto (media.conf). Por eso aca NO van los binds de DDC/CI
 # que usa el escritorio: sobre eDP-1 no funcionarian.
+
+# ── Perifericos ──────────────────────────────────────────────────────────────
+# El Logitech G203 trae un perfil grabado en su memoria interna (hecho con G HUB)
+# que deja el click izquierdo mapeado a un boton lateral. Solaar lo corrige
+# poniendo el mouse en "Device Mode: Host" (onboard_profiles disabled, guardado
+# en ~/.config/solaar/config.yaml), pero es un ajuste de sesion: se pierde al
+# desconectar el mouse, al suspender o al reiniciar. Por eso solaar tiene que
+# quedar corriendo para reaplicarlo — la misma razon por la que ya estaba en el
+# autostart del escritorio.
+exec-once = solaar --window=hide --restart-on-wake-up &
 
 # Apps que arrancan con la sesion
 exec-once = xdg-terminal-exec

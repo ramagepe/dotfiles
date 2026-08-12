@@ -1,0 +1,98 @@
+#!/usr/bin/env bash
+# monitor-external-toggle — enciende/apaga los monitores EXTERNOS ("solo notebook").
+#
+# Omarchy trae el caso inverso (`omarchy hyprland monitor internal off` deja solo
+# el externo) pero no este. Usa el mismo mecanismo de toggles: un .conf dentro de
+# ~/.local/state/omarchy/toggles/hypr, que hyprland.conf sourcea al final, para
+# que el apagado sobreviva a los `hyprctl reload` que Omarchy dispara solo
+# (cambio de tema, otros toggles, etc.).
+#
+# El flag se limpia al iniciar sesion (ver el exec-once en local.conf##class.laptop):
+# es un modo temporal, no una preferencia que deba persistir entre reinicios.
+
+set -uo pipefail
+
+FLAG="$HOME/.local/state/omarchy/toggles/hypr/external-monitor-disable.conf"
+INTERNAL_FLAG="$HOME/.local/state/omarchy/toggles/hypr/internal-monitor-disable.conf"
+
+notify() {
+  notify-send -u low -h string:x-canonical-private-synchronous:monitor-external "󰍹    $1"
+}
+
+# Conectores externos fisicamente conectados, con el nombre que usa Hyprland
+# (card1-HDMI-A-1 -> HDMI-A-1). Se lee de sysfs y no de `hyprctl monitors` para
+# que funcione igual cuando el monitor ya esta deshabilitado por config.
+connected_externals() {
+  local path name
+  for path in /sys/class/drm/card*-*/status; do
+    name=${path%/status}
+    name=${name##*/}
+    name=${name#card*-}
+    [[ $name == eDP-* ]] && continue
+    [[ "$(<"$path")" == connected ]] && echo "$name"
+  done
+}
+
+# Panel interno conectado, si lo hay. En una maquina sin eDP (el desktop) apagar
+# los externos dejaria la sesion sin ninguna pantalla.
+connected_internal() {
+  local path name
+  for path in /sys/class/drm/card*-eDP-*/status; do
+    [[ -r $path ]] || continue
+    name=${path%/status}
+    name=${name##*/}
+    name=${name#card*-}
+    [[ "$(<"$path")" == connected ]] && echo "$name"
+  done
+}
+
+enable() {
+  if [[ ! -f $FLAG ]]; then
+    notify "External displays already on"
+    exit 0
+  fi
+  rm -f "$FLAG"
+  hyprctl reload >/dev/null
+  notify "External displays enabled"
+}
+
+disable() {
+  local externals
+  externals=$(connected_externals)
+
+  if [[ -z $externals ]]; then
+    notify "No external display connected"
+    exit 1
+  fi
+
+  # Guardas: sin estas, apagar los externos con el panel interno apagado (o en
+  # una maquina que directamente no tiene panel interno) dejaria la sesion sin
+  # ninguna pantalla activa.
+  if [[ -z "$(connected_internal)" ]]; then
+    notify "No laptop display to fall back to"
+    exit 1
+  fi
+  if [[ -f $INTERNAL_FLAG ]]; then
+    notify "Laptop display is off — can't disable the only active display"
+    exit 1
+  fi
+
+  : >"$FLAG"
+  while IFS= read -r monitor; do
+    printf 'monitor=%s,disable\n' "$monitor" >>"$FLAG"
+  done <<<"$externals"
+
+  hyprctl reload >/dev/null
+  notify "External displays disabled"
+}
+
+case "${1:-toggle}" in
+  on) enable ;;
+  off) disable ;;
+  toggle) if [[ -f $FLAG ]]; then enable; else disable; fi ;;
+  reset) rm -f "$FLAG" ;;
+  *)
+    echo "Usage: $(basename "$0") {on|off|toggle|reset}" >&2
+    exit 1
+    ;;
+esac

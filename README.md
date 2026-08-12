@@ -10,7 +10,7 @@ Configuraciones personales para [Omarchy](https://omarchy.org/) (Arch Linux + Hy
 | `hypr/bindings.conf` | Vim-style HJKL, switch teclado US/LATAM (Super+Shift+Space), toggle waybar (Super+B), ALT+TAB groups |
 | `hypr/autostart.conf` | Workspace assignments (zen, postman, obsidian, discord, etc.) |
 | `hypr/local.conf##class.desktop` | **Especifico del escritorio**: brillo por DDC/CI, solaar, 8 apps de autostart |
-| `hypr/local.conf##class.laptop` | **Especifico de la notebook**: 5 apps de autostart, sin binds de DDC |
+| `hypr/local.conf##class.laptop` | **Especifico de la notebook**: pantallas a 1x con el BenQ fijo a la derecha, modo "solo notebook" (Super+Ctrl+Shift+Delete), solaar para corregir el perfil onboard del G203, 5 apps de autostart, sin binds de DDC |
 | `hypr/input.conf` | Dual keyboard `us,latam`, reglas JetBrains IDE |
 | `hypr/looknfeel.conf` | Hyprland groups con colores Dracula, tab bar oculto, auto-group Ghostty |
 | `hypr/hyprland.conf` | Source de envs.conf |
@@ -75,6 +75,7 @@ Config completa basada en LazyVim con plugins custom (code-companion, lazydocker
 | Archivo | Descripcion |
 |---|---|
 | `code/scripts/boot-to-windows` | UEFI BootNext para dual-boot one-time reboot |
+| `.local/bin/monitor-external-toggle` | Apaga/prende los monitores externos (modo "solo notebook"), el caso que Omarchy no cubre |
 
 ## Restaurar en instalacion nueva
 
