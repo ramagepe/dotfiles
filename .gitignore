@@ -15,6 +15,9 @@
 /*
 !/.gitignore
 !/README.md
+# Script de instalación en una máquina nueva. Vive en la raíz del repo para que
+# la URL de raw sea corta y se pueda correr con un curl de una línea.
+!/bootstrap.sh
 
 # ============================== Shell ==============================
 !/.bashrc
