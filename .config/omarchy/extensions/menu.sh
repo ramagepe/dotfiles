@@ -32,6 +32,19 @@ show_system_menu() {
 
 OMARCHY_HYPR_TOGGLES="$HOME/.local/state/omarchy/toggles/hypr"
 
+# Este archivo lo comparten las dos maquinas (no tiene alternate de yadm), asi
+# que los modos de proyeccion tienen que aparecer solo donde tienen sentido: en
+# el escritorio no hay panel interno, y "External only" terminaria pidiendole a
+# omarchy-hyprland-monitor-internal que apague un eDP que no existe.
+has_internal_display() {
+  local status
+  for status in /sys/class/drm/card*-eDP-*/status; do
+    [[ -r $status ]] || continue
+    [[ "$(<"$status")" == connected ]] && return 0
+  done
+  return 1
+}
+
 current_display_mode() {
   if [[ -f "$OMARCHY_HYPR_TOGGLES/internal-monitor-mirror.conf" ]]; then
     echo "󰆏  Mirror"
@@ -80,10 +93,11 @@ show_display_mode_menu() {
 show_hardware_menu() {
   local options
 
-  if omarchy-hw-external-monitors; then
+  if has_internal_display && omarchy-hw-external-monitors; then
     options="󰍺  Displays"
   else
-    # Sin monitor externo los cuatro modos no aplican: se deja el menu original.
+    # Sin panel interno (escritorio) o sin monitor externo, los cuatro modos no
+    # aplican: se deja el menu tal cual viene de Omarchy.
     options="󰛧  Laptop Display\n 󰍹  Mirror Display"
   fi
 
