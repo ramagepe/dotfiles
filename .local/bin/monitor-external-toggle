@@ -47,10 +47,9 @@ connected_internal() {
 }
 
 enable() {
-  if [[ ! -f $FLAG ]]; then
-    notify "External displays already on"
-    exit 0
-  fi
+  # Ya encendidos: no-op silencioso, para poder encadenar los comandos que
+  # arman cada modo de proyeccion sin disparar notificaciones de mas.
+  [[ -f $FLAG ]] || return 0
   rm -f "$FLAG"
   hyprctl reload >/dev/null
   notify "External displays enabled"
@@ -58,6 +57,9 @@ enable() {
 
 disable() {
   local externals
+
+  [[ -f $FLAG ]] && return 0  # ya apagados: no-op silencioso
+
   externals=$(connected_externals)
 
   if [[ -z $externals ]]; then

@@ -61,7 +61,7 @@ Config completa basada en LazyVim con plugins custom (code-companion, lazydocker
 ### Omarchy
 | Archivo | Descripcion |
 |---|---|
-| `omarchy/extensions/menu.sh` | Menu sistema con "Boot to Windows" |
+| `omarchy/extensions/menu.sh` | Menu sistema con "Boot to Windows"; submenu de modos de proyeccion (Dual / Laptop only / External only / Mirror) en el menu de hardware |
 | `omarchy/branding/about.txt` | ASCII art logo custom |
 | `omarchy/branding/screensaver.txt` | Banner ASCII |
 
