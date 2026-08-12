@@ -59,7 +59,7 @@ exec-once = beekeeper-studio
 exec-once = obsidian
 exec-once = bitwarden-desktop
 
-# Slack: todavia no esta instalado en ninguna de las dos maquinas.
-# Instalarlo con:  omarchy pkg aur add slack-desktop
-# y despues descomentar la linea de abajo.
+# Slack ya esta instalado (slack-desktop-wayland), pero a proposito no arranca
+# con la sesion: se abre a mano cuando hace falta. Para que arranque solo,
+# descomentar la linea de abajo.
 # exec-once = slack
