@@ -2,17 +2,45 @@
   "permissions": {
     "allow": [
       "mcp__pencil"
+    ],
+    "defaultMode": "auto"
+  },
+  "hooks": {
+    "SessionStart": [
+      {
+        "matcher": "*",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "bash '/home/ramage/.claude/hooks/herdr-agent-state.sh' session",
+            "timeout": 10
+          }
+        ]
+      }
     ]
   },
-  "model": "opus",
   "enabledPlugins": {
-    "cloud-infrastructure@claude-code-workflows": true,
-    "deployment-strategies@claude-code-workflows": true,
-    "deployment-validation@claude-code-workflows": true,
-    "cicd-automation@claude-code-workflows": true,
-    "unit-testing@claude-code-workflows": true,
-    "code-review-ai@claude-code-workflows": true,
-    "pyright-lsp@claude-plugins-official": true
+    "engram@engram": true
   },
-  "alwaysThinkingEnabled": true
+  "extraKnownMarketplaces": {
+    "engram": {
+      "source": {
+        "source": "github",
+        "repo": "Gentleman-Programming/engram"
+      }
+    }
+  },
+  "language": "Español",
+  "alwaysThinkingEnabled": true,
+  "effortLevel": "xhigh",
+  "tui": "fullscreen",
+  "voice": {
+    "enabled": true,
+    "mode": "tap"
+  },
+  "skipWorkflowUsageWarning": true,
+  "editorMode": "normal",
+  "autoCompactEnabled": false,
+  "skipAutoPermissionPrompt": true,
+  "voiceEnabled": true
 }

@@ -1,0 +1,21 @@
+# ── Configuracion especifica de la NOTEBOOK (AenimazZe-W) ─────────────────────
+#
+# Este archivo lo materializa yadm como ~/.config/hypr/local.conf segun el valor
+# de `yadm config local.class`. NO editar local.conf directamente: se pisa.
+# Editar SIEMPRE este archivo (local.conf##class.laptop) y correr `yadm alt`.
+
+# Brillo: la notebook tiene backlight interno y Omarchy ya lo maneja con las
+# teclas Fn por defecto (media.conf). Por eso aca NO van los binds de DDC/CI
+# que usa el escritorio: sobre eDP-1 no funcionarian.
+
+# Apps que arrancan con la sesion
+exec-once = xdg-terminal-exec
+exec-once = zen-browser
+exec-once = beekeeper-studio
+exec-once = obsidian
+exec-once = bitwarden-desktop
+
+# Slack: todavia no esta instalado en ninguna de las dos maquinas.
+# Instalarlo con:  omarchy pkg aur add slack-desktop
+# y despues descomentar la linea de abajo.
+# exec-once = slack

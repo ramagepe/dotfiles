@@ -6,6 +6,9 @@
 source ~/.local/share/omarchy/default/bash/rc
 source ~/.aliases
 
+# Secretos locales de esta máquina. Nunca se commitea: ignorado por ~/.gitignore.
+[ -f "$HOME/.secrets" ] && . "$HOME/.secrets"
+
 # Add your own exports, aliases, and functions here.
 #
 # Make an alias for invoking commands you use constantly
@@ -53,3 +56,13 @@ _tmux_update_border() {
 
 PROMPT_COMMAND="_tmux_update_border${PROMPT_COMMAND:+;$PROMPT_COMMAND}"
 
+export PATH="/home/ramage/go/bin:$PATH"
+
+# Android SDK (ANDROID_HOME already set above)
+export ANDROID_SDK_ROOT="$ANDROID_HOME"
+export ANDROID_AVD_HOME="$HOME/.config/.android/avd"
+export PATH="$ANDROID_HOME/cmdline-tools/latest/bin:$ANDROID_HOME/platform-tools:$ANDROID_HOME/emulator:$PATH"
+
+# mise — per-project tool versions via .mise.toml (sets JAVA_HOME, etc.)
+eval "$(mise activate bash)"
+export PATH=$PATH:$HOME/.maestro/bin

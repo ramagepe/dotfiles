@@ -53,6 +53,9 @@ application/xml=nvim.desktop
 text/xml=nvim.desktop
 x-scheme-handler/discord=vesktop.desktop
 inode/directory=org.gnome.Nautilus.desktop
+application/vnd.openxmlformats-officedocument.wordprocessingml.document=libreoffice-writer.desktop
+x-scheme-handler/claude-cli=claude-code-url-handler.desktop
+x-scheme-handler/rpi-imager=com.raspberrypi.rpi-imager-uri-handler.desktop
 
 [Added Associations]
 x-scheme-handler/http=zen.desktop;
@@ -66,3 +69,4 @@ application/xhtml+xml=zen.desktop;
 application/x-extension-xhtml=zen.desktop;
 application/x-extension-xht=zen.desktop;
 application/pdf=zen.desktop;
+application/vnd.openxmlformats-officedocument.wordprocessingml.document=libreoffice-writer.desktop;

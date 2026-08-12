@@ -18,3 +18,9 @@
 [credential "https://gist.github.com"]
 	helper = 
 	helper = !/usr/bin/gh auth git-credential
+[diff]
+	tool = nvimdiff
+[difftool]
+	prompt = false
+[merge]
+	tool = nvimdiff

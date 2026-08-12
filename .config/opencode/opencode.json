@@ -1,5 +1,21 @@
 {
   "$schema": "https://opencode.ai/config.json",
+  "plugin": [
+    "opencode-with-claude"
+  ],
+  "provider": {
+    "anthropic": {
+      "options": {
+        "baseURL": "http://127.0.0.1:3456",
+        "apiKey": "dummy"
+      }
+    }
+  },
+  "compaction": {
+    "auto": false,
+    "prune": false,
+    "reserved": 0
+  },
   "command": {
     "notify": {
       "template": ".",
@@ -35,17 +51,21 @@
     }
   },
   "mcp": {
+    "linkedin": {
+      "type": "local",
+      "command": [
+        "uvx",
+        "linkedin-scraper-mcp@latest"
+      ],
+      "environment": {
+        "UV_HTTP_TIMEOUT": "300"
+      }
+    },
     "linear": {
       "enabled": true,
-      "command": [
-        "npx",
-        "-y",
-        "@mseep/linear-mcp"
-      ],
-      "type": "local",
-      "environment": {
-        "LINEAR_API_KEY": "PLACEHOLDER_LINEAR_API_KEY"
-      }
+      "type": "remote",
+      "url": "https://mcp.linear.app/mcp",
+      "oauth": {}
     },
     "mercadopago-mcp-server": {
       "command": [
@@ -58,12 +78,12 @@
       ],
       "type": "local",
       "environment": {
-        "AUTH_HEADER": "PLACEHOLDER_MERCADOPAGO_BEARER_TOKEN"
+        "AUTH_HEADER": "{env:MERCADOPAGO_AUTH_HEADER}"
       }
     },
     "aws-knowledge-mcp-server": {
       "url": "https://knowledge-mcp.global.api.aws",
-      "type": "remote",
+      "type": "remote"
     },
     "awslabs.aws-pricing-mcp-server": {
       "command": [
@@ -81,6 +101,14 @@
       "type": "remote",
       "url": "https://mcp.ai.pulumi.com/mcp",
       "oauth": {}
+    },
+    "godot": {
+      "command": [
+        "npx",
+        "-y",
+        "godot-mcp-server"
+      ],
+      "type": "local"
     }
   },
   "autoupdate": false,

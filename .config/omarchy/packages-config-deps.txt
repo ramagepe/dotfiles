@@ -1,0 +1,38 @@
+# Paquetes que NECESITA la configuracion para no quedar coja
+# ==========================================================
+# Generado el 2026-08-12 analizando que programas invocan ~/.config/hypr/*.conf
+# y ~/.config/waybar/config.jsonc.
+#
+# Si falta alguno de estos, el keybinding correspondiente no hace nada y no
+# aparece ningun error: la tecla simplemente no responde.
+#
+# Instalar con:  omarchy pkg add <paquete>       (repos oficiales)
+#                omarchy pkg aur add <paquete>   (AUR)
+#
+# Para ver que falta en esta maquina:
+#   comm -23 <(grep -v '^#' packages-config-deps.txt | grep -v '^$' | sort) <(pacman -Qqe | sort)
+
+# ── Los invoca un keybinding: van en cualquier maquina ────────────────────────
+btop                 # SUPER SHIFT T  · monitor de actividad
+lazydocker           # SUPER SHIFT D  · TUI de docker
+cliamp               # SUPER SHIFT ALT M · reproductor TUI
+nautilus             # SUPER SHIFT F  · gestor de archivos
+obsidian             # SUPER SHIFT O  · notas
+signal-desktop       # SUPER SHIFT G  · mensajeria
+1password-beta       # SUPER SHIFT /  · contrasenas
+spotify              # SUPER SHIFT M  · musica
+zen-browser-bin      # SUPER SHIFT B  · navegador (y todas las webapps)
+bitwarden            # autostart
+
+# ── Base de Omarchy: ya vienen instalados, listados por completitud ───────────
+uwsm
+xdg-terminal-exec
+
+# ── Solo en el DESKTOP (local.conf##class.desktop) ────────────────────────────
+solaar               # receptor Logitech Unifying
+postman-bin
+discord
+
+# ── Solo en la NOTEBOOK (local.conf##class.laptop) ────────────────────────────
+beekeeper-studio-bin
+# slack-desktop      # AUR · todavia no instalado en ninguna de las dos maquinas

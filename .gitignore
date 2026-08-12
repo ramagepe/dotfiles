@@ -1,56 +1,129 @@
-# yadm gitignore - protect secrets and exclude noise
+# yadm gitignore — política de WHITELIST
+#
+# Este repo contiene SOLO configuración del sistema y del escritorio: lo que
+# trasciende de una máquina a otra. NO es un backup del home.
+#
+# Explícitamente fuera de alcance:
+#   - ~/code y todo espacio de trabajo (cada proyecto tiene su propio repo)
+#   - credenciales de cualquier tipo (el remoto es PÚBLICO)
+#   - estado de aplicaciones, cachés, binarios y datos
+#
+# Por eso se ignora todo por defecto y se habilita archivo por archivo. Para
+# agregar algo nuevo hay que abrirle la puerta acá primero. El beneficio:
+# `yadm status -uall` vuelve a ser una lista corta y legible de lo que falta.
 
-# === SECRETS (NEVER commit) ===
+/*
+!/.gitignore
+!/README.md
+
+# ============================== Shell ==============================
+!/.bashrc
+!/.aliases
+!/.XCompose
+
+# ============================== ~/.config ==========================
+!/.config
+/.config/*
+
+# --- Escritorio: Hyprland y compañía ---
+!/.config/hypr
+.config/hypr/local/
+# Verificados idénticos (o anteriores) al default de Omarchy: trackearlos
+# congelaría defaults viejos y le impediría a Omarchy actualizarlos.
+.config/hypr/hypridle.conf
+.config/hypr/hyprsunset.conf
+.config/hypr/xdph.conf
+!/.config/waybar
+!/.config/walker
+!/.config/omarchy
+.config/omarchy/current/
+.config/omarchy/themes/
+.config/omarchy/branding/screensaver-backup.txt
+*.sample
+
+# --- Terminales ---
+!/.config/ghostty
+!/.config/alacritty
+!/.config/tmux
+!/.config/xdg-terminals.list
+
+# --- Herramientas de línea de comandos ---
+!/.config/git
+.config/git/hosts.yml
+!/.config/gh
+.config/gh/hosts.yml
+!/.config/mise
+!/.config/htop
+.config/htop/htop_history
+!/.config/herdr
+/.config/herdr/*
+!/.config/herdr/config.toml
+
+# --- Editores ---
+!/.config/nvim
+.config/nvim/lazy-lock.json
+.config/nvim/.luarc.json
+!/.config/zed
+/.config/zed/*
+!/.config/zed/settings.json
+!/.config/Code
+/.config/Code/*
+!/.config/Code/User
+/.config/Code/User/*
+!/.config/Code/User/settings.json
+!/.config/Code/User/keybindings.json
+
+# --- Integración de escritorio ---
+!/.config/mimeapps.list
+!/.config/user-dirs.dirs
+!/.config/gtk-3.0
+/.config/gtk-3.0/*
+!/.config/gtk-3.0/bookmarks
+
+# --- yadm: bootstrap, encrypt, alternates ---
+!/.config/yadm
+
+# ============================== Agentes ============================
+!/.claude
+/.claude/*
+!/.claude/settings.json
+!/.claude/CLAUDE.md
+!/.claude/keybindings.json
+!/.claude/skills
+
+!/.agents
+/.agents/*
+!/.agents/skills
+
+# ============================== ~/.local/bin =======================
+# Sólo los dos scripts propios. El resto son 240 MB de binarios.
+!/.local
+/.local/*
+!/.local/bin
+/.local/bin/*
+!/.local/bin/omarchy-brightness-ddc
+!/.local/bin/tmux-smooth-zoom
+
+# ============================== Cortes transversales ===============
+# Valen dentro de cualquier directorio habilitado arriba.
+
+# Credenciales — el remoto es público
 .secrets
 .env
 .env.*
+*.pem
+*.key
+id_*
+**/hosts.yml
+**/auth.json
+**/credentials
+**/*token*.json
 
-# === Opencode backups and deps ===
-.config/opencode/*.bak.*
-.config/opencode/node_modules/
-.config/opencode/bun.lock
-.config/opencode/package.json
-
-# === Claude state (ephemeral, lots of cache/stats) ===
-.claude.json
-
-# === Claude internal dirs (sessions, cache, telemetry) ===
-.claude/backups/
-.claude/cache/
-.claude/debug/
-.claude/downloads/
-.claude/history.jsonl
-.claude/ide/
-.claude/mcp-needs-auth-cache.json
-.claude/paste-cache/
-.claude/plugins/
-.claude/projects/
-.claude/session-env/
-.claude/shell-snapshots/
-.claude/stats-cache.json
-.claude/statsig/
-.claude/telemetry/
-.claude/todos/
-.claude/.credentials.json
-
-# === Nvim state/lazy lock (regenerated) ===
-.config/nvim/lazy-lock.json
-.config/nvim/.luarc.json
-
-# === Omarchy runtime state ===
-.config/omarchy/current/
-
-# === General noise ===
-.cache/
-.local/state/
-.local/share/
-!.local/share/yadm/
-.mozilla/
-.zen/
-.npm/
-.nvm/
-.cargo/
-.rustup/
+# Ruido
+*.bak
+*.bak.*
+*.pacnew
+*.log
 node_modules/
 __pycache__/
 *.pyc
