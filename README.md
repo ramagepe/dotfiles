@@ -8,7 +8,9 @@ Configuraciones personales para [Omarchy](https://omarchy.org/) (Arch Linux + Hy
 | Archivo | Descripcion |
 |---|---|
 | `hypr/bindings.conf` | Vim-style HJKL, switch teclado US/LATAM (Super+Shift+Space), toggle waybar (Super+B), ALT+TAB groups |
-| `hypr/autostart.conf` | Workspace assignments (zen, postman, obsidian, discord, etc.), auto-start 8 apps |
+| `hypr/autostart.conf` | Workspace assignments (zen, postman, obsidian, discord, etc.) |
+| `hypr/local.conf##class.desktop` | **Especifico del escritorio**: brillo por DDC/CI, solaar, 8 apps de autostart |
+| `hypr/local.conf##class.laptop` | **Especifico de la notebook**: 5 apps de autostart, sin binds de DDC |
 | `hypr/input.conf` | Dual keyboard `us,latam`, reglas JetBrains IDE |
 | `hypr/looknfeel.conf` | Hyprland groups con colores Dracula, tab bar oculto, auto-group Ghostty |
 | `hypr/hyprland.conf` | Source de envs.conf |
@@ -76,18 +78,35 @@ Config completa basada en LazyVim con plugins custom (code-companion, lazydocker
 
 ## Restaurar en instalacion nueva
 
-### 1. Instalar Omarchy
+### Forma corta (un solo comando)
+
+Con Omarchy ya instalado:
+
+```bash
+curl -fsSL https://raw.githubusercontent.com/ramagepe/dotfiles/master/bootstrap.sh | bash
+```
+
+Eso hace todo: instala yadm si falta, **detecta solo si es notebook o escritorio** (por la presencia de bateria), respalda la config actual, clona, aplica los archivos, resuelve los alternates, lista que paquetes faltan y recarga Hyprland y Waybar. Es idempotente: se puede correr las veces que haga falta.
+
+### Forma larga (paso a paso)
+
+#### 1. Instalar Omarchy
 
 Seguir la guia en [omarchy.org](https://omarchy.org/).
 
-### 2. Instalar yadm y clonar
+#### 2. Instalar yadm y clonar
 
 ```bash
 sudo pacman -S yadm
 yadm clone https://github.com/ramagepe/dotfiles.git
+yadm config local.class laptop    # o 'desktop', segun la maquina
+yadm checkout ~                   # <-- IMPRESCINDIBLE
+yadm alt
 ```
 
-yadm va a preguntar si queres sobreescribir archivos existentes. Decir **Y** (si) para reemplazar los defaults de Omarchy con tus customizaciones.
+> ⚠️ **`yadm clone` NO sobreescribe nada.** No pregunta: deja intactos los archivos que ya existen y solo imprime un `**NOTE**`. Como Omarchy instala sus propios defaults, un clone sobre una instalacion fresca aplica menos de un tercio del repo y termina sin error, dando la impresion de que funciono. **El `yadm checkout ~` no es opcional.**
+>
+> `yadm alt` resuelve los archivos `##class.*`, y solo procesa archivos ya trackeados. La clase hay que definirla **antes**, o el symlink de `local.conf` queda apuntando a la maquina equivocada.
 
 ### 3. Aplicar tema
 
