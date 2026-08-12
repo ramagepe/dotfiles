@@ -91,14 +91,19 @@ show_display_mode_menu() {
 # El resto de las entradas es una copia de las de Omarchy: si upstream agrega
 # alguna, hay que reflejarla aca.
 show_hardware_menu() {
-  local options
+  local options=""
 
-  if has_internal_display && omarchy-hw-external-monitors; then
-    options="󰍺  Displays"
-  else
-    # Sin panel interno (escritorio) o sin monitor externo, los cuatro modos no
-    # aplican: se deja el menu tal cual viene de Omarchy.
-    options="󰛧  Laptop Display\n 󰍹  Mirror Display"
+  # Sin panel interno (el escritorio) no se ofrece ninguna entrada de pantalla.
+  # Las dos que trae Omarchy resuelven el monitor interno por nombre y, sin eDP,
+  # el nombre queda vacio: terminan escribiendo `monitor=,disable`, que en
+  # Hyprland es la regla catch-all y apaga todas las pantallas.
+  if has_internal_display; then
+    if omarchy-hw-external-monitors; then
+      options="󰍺  Displays"
+    else
+      # Sin monitor externo los cuatro modos no aplican: menu original.
+      options="󰛧  Laptop Display\n 󰍹  Mirror Display"
+    fi
   fi
 
   if omarchy-hw-hybrid-gpu; then
@@ -116,6 +121,10 @@ show_hardware_menu() {
   if omarchy-hw-touchscreen; then
     options="$options\n󰆽  Touchscreen"
   fi
+
+  # El bloque de pantallas puede no haber aportado nada: sacamos el separador
+  # inicial para que el menu no abra con una linea en blanco.
+  options=${options#\\n}
 
   case $(menu "Toggle" "$options") in
   *Displays*) show_display_mode_menu ;;
