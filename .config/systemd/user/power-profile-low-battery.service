@@ -1,0 +1,7 @@
+[Unit]
+Description=Pasar a power-saver cuando la bateria esta baja
+Documentation=man:powerprofilesctl(1)
+
+[Service]
+Type=oneshot
+ExecStart=%h/.local/bin/power-profile-low-battery

@@ -1,0 +1,11 @@
+[Unit]
+Description=Chequear el nivel de bateria para bajar a power-saver
+
+[Timer]
+OnBootSec=2min
+OnUnitActiveSec=2min
+AccuracySec=30s
+Persistent=false
+
+[Install]
+WantedBy=timers.target

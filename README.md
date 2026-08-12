@@ -57,6 +57,7 @@ Config completa basada en LazyVim con plugins custom (code-companion, lazydocker
 |---|---|
 | `systemd/user/elephant.service` | Servicio Elephant |
 | `systemd/user/app-walker@autostart.service.d/restart.conf` | Auto-restart walker |
+| `systemd/user/power-profile-low-battery.{service,timer}` | Pasa a `power-saver` con la bateria <= 20%. Habilitar con `systemctl --user enable --now power-profile-low-battery.timer` |
 
 ### Omarchy
 | Archivo | Descripcion |
@@ -76,6 +77,7 @@ Config completa basada en LazyVim con plugins custom (code-companion, lazydocker
 |---|---|
 | `code/scripts/boot-to-windows` | UEFI BootNext para dual-boot one-time reboot |
 | `.local/bin/monitor-external-toggle` | Apaga/prende los monitores externos (modo "solo notebook"), el caso que Omarchy no cubre |
+| `.local/bin/power-profile-low-battery` | Tercer escalon de energia: `power-saver` con bateria baja (Omarchy solo cubre AC y bateria) |
 
 ## Restaurar en instalacion nueva
 

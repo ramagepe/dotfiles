@@ -1,0 +1,82 @@
+#!/usr/bin/env bash
+# power-profile-low-battery — agrega el escalon de ahorro que a Omarchy le falta.
+#
+# Omarchy ya cubre dos escalones con una regla udev, que dispara
+# omarchy-powerprofiles-set ante cambios del cargador:
+#
+#   enchufada   -> performance
+#   en bateria  -> balanced
+#
+# Este script agrega el tercero:
+#
+#   en bateria y <= LOW_THRESHOLD%  -> power-saver
+#
+# Corre desde un timer de usuario y no desde udev porque el nivel de carga no
+# genera eventos udev confiables en cada punto porcentual: los eventos de
+# power_supply se emiten al enchufar y desenchufar, no mientras se descarga.
+#
+# Solo actua en el escalon bajo. Con la bateria por encima del umbral no toca
+# nada, para no pisar cada dos minutos un perfil que hayas elegido a mano.
+#
+# Para probarlo sin tener que descargar la bateria de verdad:
+#   POWER_PROFILE_TEST_AC=0 POWER_PROFILE_TEST_CAPACITY=15 POWER_PROFILE_DRY_RUN=1 \
+#     power-profile-low-battery
+
+set -uo pipefail
+
+LOW_THRESHOLD=${LOW_THRESHOLD:-20}
+DRY_RUN=${POWER_PROFILE_DRY_RUN:-0}
+
+# Mismo criterio que usa omarchy-powerprofiles-set: cualquier Mains o USB que
+# reporte online=1 cuenta como enchufada. Contempla las notebooks que solo
+# cargan por USB-C, donde el dispositivo AC clasico puede no existir.
+on_ac() {
+  [[ -n ${POWER_PROFILE_TEST_AC:-} ]] && return "$((1 - POWER_PROFILE_TEST_AC))"
+
+  local supply type
+  for supply in /sys/class/power_supply/*; do
+    [[ -r $supply/online && -r $supply/type ]] || continue
+    type=$(<"$supply/type")
+    [[ $type == Mains || $type == USB ]] || continue
+    [[ $(<"$supply/online") == 1 ]] && return 0
+  done
+  return 1
+}
+
+battery_capacity() {
+  if [[ -n ${POWER_PROFILE_TEST_CAPACITY:-} ]]; then
+    echo "$POWER_PROFILE_TEST_CAPACITY"
+    return 0
+  fi
+
+  local supply
+  for supply in /sys/class/power_supply/*; do
+    [[ -r $supply/capacity && -r $supply/type ]] || continue
+    [[ $(<"$supply/type") == Battery ]] || continue
+    cat "$supply/capacity"
+    return 0
+  done
+  return 1
+}
+
+has_power_saver() {
+  powerprofilesctl list 2>/dev/null | grep -qE '^\s*[*[:space:]]\s*power-saver:'
+}
+
+# Enchufada: la regla udev de Omarchy ya se encargo de poner performance.
+on_ac && exit 0
+
+capacity=$(battery_capacity) || exit 0
+((capacity > LOW_THRESHOLD)) && exit 0
+
+has_power_saver || exit 0
+[[ $(powerprofilesctl get 2>/dev/null) == power-saver ]] && exit 0
+
+if ((DRY_RUN)); then
+  echo "cambiaria a power-saver (bateria ${capacity}%, umbral ${LOW_THRESHOLD}%)"
+  exit 0
+fi
+
+powerprofilesctl set power-saver
+notify-send -u low -h string:x-canonical-private-synchronous:power-profile \
+  "󰁻    Bateria al ${capacity}%" "Perfil de energia en power-saver"

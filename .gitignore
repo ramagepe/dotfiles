@@ -83,6 +83,12 @@
 /.config/gtk-3.0/*
 !/.config/gtk-3.0/bookmarks
 
+# --- Servicios de usuario ---
+# Los *.wants son el estado que genera `systemctl --user enable`, no
+# configuracion: las unidades se habilitan a mano en cada maquina.
+!/.config/systemd
+.config/systemd/user/*.wants/
+
 # --- yadm: bootstrap, encrypt, alternates ---
 !/.config/yadm
 
@@ -107,6 +113,7 @@
 !/.local/bin/omarchy-brightness-ddc
 !/.local/bin/tmux-smooth-zoom
 !/.local/bin/monitor-external-toggle
+!/.local/bin/power-profile-low-battery
 
 # ============================== Cortes transversales ===============
 # Valen dentro de cualquier directorio habilitado arriba.
