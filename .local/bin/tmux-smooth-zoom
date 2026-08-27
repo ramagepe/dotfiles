@@ -1,0 +1,99 @@
+#!/usr/bin/env bash
+# tmux-smooth-zoom: animated pane zoom/unzoom
+# Replaces the abrupt resize-pane -Z with a gradual resize animation.
+
+set -euo pipefail
+
+STEPS=8
+SLEEP=0.008
+
+pane_id=$(tmux display-message -p '#{pane_id}')
+window_width=$(tmux display-message -p '#{window_width}')
+window_height=$(tmux display-message -p '#{window_height}')
+pane_count=$(tmux list-panes | wc -l)
+
+# If only one pane, nothing to animate
+if (( pane_count == 1 )); then
+  exit 0
+fi
+
+# State file to track "zoomed" state per pane
+state_dir="${XDG_STATE_HOME:-$HOME/.local/state}/tmux-smooth-zoom"
+mkdir -p "$state_dir"
+state_file="$state_dir/$pane_id"
+
+# Detect layout direction: check if panes are side-by-side (vertical split)
+# or stacked (horizontal split) by comparing y-positions of first two panes
+layouts=$(tmux list-panes -F '#{pane_left} #{pane_top} #{pane_width} #{pane_height}')
+first_top=$(echo "$layouts" | head -1 | awk '{print $2}')
+second_top=$(echo "$layouts" | sed -n '2p' | awk '{print $2}')
+
+if [[ "$first_top" == "$second_top" ]]; then
+  direction="horizontal"  # panes are side-by-side, resize width
+else
+  direction="vertical"    # panes are stacked, resize height
+fi
+
+current_width=$(tmux display-message -p '#{pane_width}')
+current_height=$(tmux display-message -p '#{pane_height}')
+
+ease_out() {
+  # quadratic ease-out: fast start, gentle landing
+  local step=$1
+  local total=$2
+  local t
+  t=$(awk "BEGIN {printf \"%.6f\", $step / $total}")
+  awk "BEGIN {printf \"%.6f\", 1 - (1 - $t) * (1 - $t)}"
+}
+
+animate_resize() {
+  local from_w=$1 to_w=$2 from_h=$3 to_h=$4
+  local i
+
+  for (( i = 1; i <= STEPS; i++ )); do
+    local progress
+    progress=$(ease_out "$i" "$STEPS")
+
+    if [[ "$direction" == "horizontal" ]]; then
+      local target_w
+      target_w=$(awk "BEGIN {printf \"%d\", $from_w + ($to_w - $from_w) * $progress}")
+      local delta=$(( target_w - current_width ))
+      if (( delta > 0 )); then
+        tmux resize-pane -R "$delta" 2>/dev/null || true
+      elif (( delta < 0 )); then
+        tmux resize-pane -L "$(( -delta ))" 2>/dev/null || true
+      fi
+      current_width=$target_w
+    else
+      local target_h
+      target_h=$(awk "BEGIN {printf \"%d\", $from_h + ($to_h - $from_h) * $progress}")
+      local delta=$(( target_h - current_height ))
+      if (( delta > 0 )); then
+        tmux resize-pane -D "$delta" 2>/dev/null || true
+      elif (( delta < 0 )); then
+        tmux resize-pane -U "$(( -delta ))" 2>/dev/null || true
+      fi
+      current_height=$target_h
+    fi
+
+    sleep "$SLEEP"
+  done
+}
+
+if [[ -f "$state_file" ]]; then
+  # UNZOOM: restore original size
+  original_w=$(awk '{print $1}' "$state_file")
+  original_h=$(awk '{print $2}' "$state_file")
+
+  animate_resize "$current_width" "$original_w" "$current_height" "$original_h"
+  rm -f "$state_file"
+else
+  # ZOOM: save current size, then expand to fill window
+  echo "$current_width $current_height" > "$state_file"
+
+  # Target: nearly full window (leave 1 col/row for border)
+  target_w=$(( window_width - 1 ))
+  target_h=$(( window_height - 1 ))
+
+  animate_resize "$current_width" "$target_w" "$current_height" "$target_h"
+fi

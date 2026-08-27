@@ -2,79 +2,74 @@
 
 Configuraciones personales para [Omarchy](https://omarchy.org/) (Arch Linux + Hyprland), gestionadas con [yadm](https://yadm.io/).
 
+> Puestas al dia para **Omarchy 4 (quattro)**, que cambio la config de Hyprland de `.conf` a Lua y reemplazo Waybar, mako y walker por el shell de Quickshell.
+>
+> Para migrar una maquina que todavia esta en 3.x, seguir
+> **[MIGRACION-OMARCHY-4.md](MIGRACION-OMARCHY-4.md)**: el update no rompe nada
+> visible, pero deja la configuracion propia muda.
+
 ## Que incluye
 
 ### Hyprland
-| Archivo | Descripcion |
-|---|---|
-| `hypr/bindings.conf` | Vim-style HJKL, switch teclado US/LATAM (Super+Shift+Space), toggle waybar (Super+B), ALT+TAB groups |
-| `hypr/autostart.conf` | Workspace assignments (zen, postman, obsidian, discord, etc.) |
-| `hypr/local.conf##class.desktop` | **Especifico del escritorio**: brillo por DDC/CI, solaar, 8 apps de autostart |
-| `hypr/local.conf##class.laptop` | **Especifico de la notebook**: 5 apps de autostart, sin binds de DDC |
-| `hypr/input.conf` | Dual keyboard `us,latam`, reglas JetBrains IDE |
-| `hypr/looknfeel.conf` | Hyprland groups con colores Dracula, tab bar oculto, auto-group Ghostty |
-| `hypr/hyprland.conf` | Source de envs.conf |
-| `hypr/hyprlock.conf` | Input field 450x75, fuente CaskaydiaMono |
-| `hypr/envs.conf` | Variables de entorno extra |
+Desde Omarchy 4 la config es Lua: `hyprland.lua` carga los defaults del paquete y despues estos modulos, asi que un update puede mejorar los defaults sin pisar nada de aca.
 
-### Waybar
 | Archivo | Descripcion |
 |---|---|
-| `waybar/config.jsonc` | CPU, memory, disk en centro; clock con fecha; workspaces con numeros |
-| `waybar/style.css` | Fuente CaskaydiaMono, indicador workspace activo |
+| `hypr/hyprland.lua` | Orquestador: carga los defaults de Omarchy y despues estos modulos |
+| `hypr/input.lua` | Toggle de teclado us/latam (Alt izq + Alt der) y `repeat_delay` |
+| `hypr/looknfeel.lua` | Tab bar de grupos oculta, auto-group de Ghostty, sin warp del cursor |
+| `hypr/windows.lua` | Cada app a su workspace (zen, postman, obsidian, discord, etc.) |
+| `hypr/bindings.lua` | Cerrar con SUPER+Q, foco con HJKL, full width en SUPER+TAB, ALT+TAB dentro del grupo, barra en SUPER+B |
+| `hypr/monitors.lua` | Escalado del monitor |
+| `hypr/autostart.lua` | Procesos extra al iniciar |
+| `hypr/local.lua##class.desktop` | **Especifico del escritorio**: brillo por DDC/CI, solaar, 8 apps de autostart |
+| `hypr/local.lua##class.laptop` | **Especifico de la notebook**: 5 apps de autostart, sin binds de DDC |
+
+### Omarchy
+| Archivo | Descripcion |
+|---|---|
+| `omarchy/shell.json` | Barra de Quickshell: layout de widgets, posicion, tiempos de idle |
+| `omarchy/shell.toml` | Tamaño de fuente del shell |
+| `omarchy/extensions/omarchy-menu.jsonc` | Submenu "Schedule Shutdown" dentro de System |
+| `omarchy/hooks/post-update.d/setup-agent.hook` | Invitacion a elegir agente por defecto tras un update |
+| `omarchy/branding/about.txt` | ASCII art logo custom |
+| `omarchy/branding/screensaver.txt` | Banner ASCII |
 
 ### Terminales
 | Archivo | Descripcion |
 |---|---|
-| `alacritty/alacritty.toml` | Font size 11.5, F11 fullscreen |
+| `alacritty/alacritty.toml` | Font size, F11 fullscreen |
 | `kitty/kitty.conf` | Padding, F11 fullscreen, single instance |
-| `ghostty/config` | Font size 11, F11 fullscreen |
+| `ghostty/config` | Font size, F11 fullscreen |
 
 ### Apps
 | Archivo | Descripcion |
 |---|---|
 | `git/config` | Identidad, pull rebase, gh credentials |
-| `tmux/tmux.conf` | Tema Aura minimal, sin status bar, vim-style panes |
-| `mako/config` | Colores Dracula/Aura, fuente Liberation Sans 11 |
-| `opencode/opencode.json` | Comandos custom, MCPs (Linear, MercadoPago, AWS, Pulumi), permisos bash |
+| `tmux/tmux.conf` | Tema Aura minimal, sin status bar, vim-style panes, OSC 52 |
+| `herdr/config.toml` | Navegacion vim entre panes, plugins |
+| `opencode/opencode.json` | Comandos custom, MCPs, permisos bash |
 | `mimeapps.list` | Asociaciones: zen browser, imv, mpv |
-| `xdg-terminals.list` | Terminal default: Ghostty |
 | `gh/config.yml` | GitHub CLI: protocolo https |
-| `mise/config.toml` | Node latest |
+| `mise/config.toml` | Node, gh y los CLIs de agentes |
+| `htop/htoprc`, `zed/settings.json`, `Code/User/*` | Config de herramientas |
 
 ### Shell
 | Archivo | Descripcion |
 |---|---|
-| `.bashrc` | NVM, Pulumi, direnv, funcion tmux pane colors por proyecto |
+| `.bashrc` | Bootstrap de `OMARCHY_PATH`, NVM, Pulumi, direnv, colores de pane por proyecto |
 | `.aliases` | 90+ aliases (pacman, docker, config shortcuts, rust tools, etc.) |
-| `.zshrc` | LM Studio PATH |
+| `.XCompose` | Secuencias de composicion propias (Caps Lock es la tecla compose) |
 
 ### Neovim
-Config completa basada en LazyVim con plugins custom (code-companion, lazydocker, opencode, omarchy-theme-hotreload, etc.).
+Config completa basada en LazyVim con plugins custom (obsidian, diffview, navegacion herdr, clipboard remoto por OSC 52, etc.).
 
-### Systemd
+### Scripts (`~/.local/bin`)
 | Archivo | Descripcion |
 |---|---|
-| `systemd/user/elephant.service` | Servicio Elephant |
-| `systemd/user/app-walker@autostart.service.d/restart.conf` | Auto-restart walker |
-
-### Omarchy
-| Archivo | Descripcion |
-|---|---|
-| `omarchy/extensions/menu.sh` | Menu sistema con "Boot to Windows" |
-| `omarchy/branding/about.txt` | ASCII art logo custom |
-| `omarchy/branding/screensaver.txt` | Banner ASCII |
-
-### Claude Code
-| Archivo | Descripcion |
-|---|---|
-| `.claude/settings.json` | Modelo, plugins, permisos |
-| `.claude/settings.local.json` | Permisos locales |
-
-### Scripts
-| Archivo | Descripcion |
-|---|---|
-| `code/scripts/boot-to-windows` | UEFI BootNext para dual-boot one-time reboot |
+| `schedule-shutdown` | Apagado programado con un timer de systemd; se expone en el menu de Omarchy |
+| `schedule-shutdown-prompt` | Dialogo para elegir las horas |
+| `tmux-smooth-zoom` | Zoom de panes sin saltos |
 
 ## Restaurar en instalacion nueva
 
@@ -86,7 +81,7 @@ Con Omarchy ya instalado:
 curl -fsSL https://raw.githubusercontent.com/ramagepe/dotfiles/master/bootstrap.sh | bash
 ```
 
-Eso hace todo: instala yadm si falta, **detecta solo si es notebook o escritorio** (por la presencia de bateria), respalda la config actual, clona, aplica los archivos, resuelve los alternates, lista que paquetes faltan y recarga Hyprland y Waybar. Es idempotente: se puede correr las veces que haga falta.
+Eso hace todo: instala yadm si falta, **detecta solo si es notebook o escritorio** (por la presencia de bateria), respalda la config actual, clona, aplica los archivos, resuelve los alternates, fija el terminal y el layout de teclado, lista que paquetes faltan y recarga Hyprland y el shell. Es idempotente: se puede correr las veces que haga falta.
 
 ### Forma larga (paso a paso)
 
@@ -106,39 +101,46 @@ yadm alt
 
 > ⚠️ **`yadm clone` NO sobreescribe nada.** No pregunta: deja intactos los archivos que ya existen y solo imprime un `**NOTE**`. Como Omarchy instala sus propios defaults, un clone sobre una instalacion fresca aplica menos de un tercio del repo y termina sin error, dando la impresion de que funciono. **El `yadm checkout ~` no es opcional.**
 >
-> `yadm alt` resuelve los archivos `##class.*`, y solo procesa archivos ya trackeados. La clase hay que definirla **antes**, o el symlink de `local.conf` queda apuntando a la maquina equivocada.
+> `yadm alt` resuelve los archivos `##class.*`, y solo procesa archivos ya trackeados. La clase hay que definirla **antes**, o el symlink de `local.lua` queda apuntando a la maquina equivocada.
 
-### 3. Aplicar tema
+#### 3. Preferencias que no viven en un dotfile
+
+Omarchy 4 guarda estas dos en el estado del sistema, no en `~/.config`, asi que hay que pedirlas por comando:
 
 ```bash
-omarchy-theme-set aura
+# Terminal de xdg-terminal-exec (reemplaza al viejo ~/.config/xdg-terminals.list)
+omarchy default terminal ghostty
+
+# Layout de teclado: Omarchy lo lee de /etc/vconsole.conf.
+# El toggle (Alt izq + Alt der) lo agrega hypr/input.lua.
+sudo localectl --no-convert set-x11-keymap "us,latam" "pc105+inet" "" "terminate:ctrl_alt_bksp"
 ```
 
-### 4. Rellenar secretos
+#### 4. Aplicar tema
+
+```bash
+omarchy theme set aura
+```
+
+#### 5. Rellenar secretos
 
 Abrir `~/.config/opencode/opencode.json` y reemplazar los placeholders:
 
 ```
-PLACEHOLDER_LINEAR_API_KEY       -> tu API key de Linear
+PLACEHOLDER_LINEAR_API_KEY           -> tu API key de Linear
 PLACEHOLDER_MERCADOPAGO_BEARER_TOKEN -> tu Bearer token de MercadoPago
-```
-
-### 5. Recargar servicios
-
-```bash
-systemctl --user daemon-reload
-systemctl --user enable --now elephant.service
 ```
 
 ## Uso diario
 
 ```bash
-# Ver que cambio
-yadm status
+# Ver que cambio. El -uall no es opcional: sin el, yadm es CIEGO a los untracked.
+yadm status -uall
 yadm diff
 
-# Trackear un archivo nuevo o modificado
-yadm add ~/.config/hypr/bindings.conf
+# Trackear un archivo nuevo o modificado. Si es nuevo, primero hay que
+# abrirle la puerta en ~/.gitignore, que es una whitelist.
+yadm add ~/.config/hypr/input.lua
 
 # Commitear
 yadm commit -m "descripcion del cambio"
@@ -149,6 +151,12 @@ yadm push
 # Bajar cambios (si editas desde otra maquina)
 yadm pull
 ```
+
+> El `.gitignore` de este repo es una **whitelist**: ignora todo y habilita archivo por archivo. Para versionar algo nuevo hay que agregar su `!` ahi primero. A cambio, `yadm status -uall` es una lista corta y legible en vez de un volcado del home.
+
+## Alcance
+
+Este repo tiene **solo configuracion del sistema y del escritorio**: lo que trasciende de una maquina a otra. No es un backup del home. Quedan afuera, sin excepciones, `~/code` y cualquier espacio de trabajo (cada proyecto tiene su repo) y las credenciales de cualquier tipo — **el remoto es publico**.
 
 ## Secretos
 
@@ -161,7 +169,10 @@ El archivo `~/.claude.json` esta excluido completamente (contiene estado efimero
 
 ## Archivos NO trackeados (se regeneran solos)
 
-- Tema aura (`~/.config/omarchy/themes/aura/`) - se instala con `omarchy-theme-set aura`
-- Neovim lazy-lock.json - se regenera al abrir nvim
-- Configs default de Omarchy que no fueron modificados (walker, lazygit, starship, etc.)
-- btop.conf - auto-regenerado por btop
+- Temas (`~/.config/omarchy/themes/`) — se instalan con `omarchy theme set <nombre>`
+- `~/.config/hypr/local.lua` — lo materializa `yadm alt` desde el `##class.*` que corresponda
+- `~/.config/hypr/.luarc.json` — lo genera Omarchy para el LSP de Lua
+- `~/.config/xdg-terminals.list` — lo genera `omarchy default terminal`
+- `hyprsunset.conf` y `xdph.conf` — identicos al default de Omarchy; trackearlos congelaria defaults viejos
+- Neovim `lazy-lock.json` — se regenera al abrir nvim
+- `btop.conf` — auto-regenerado por btop

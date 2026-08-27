@@ -1,0 +1,27 @@
+#!/bin/bash
+
+# Ask the Omarchy menu for a shutdown delay in hours, then schedule it.
+# Kept out of the menu JSONC so the input can be validated and re-asked
+# instead of failing silently on a typo.
+
+set -euo pipefail
+
+GLYPH="󰔛"
+SCHEDULE="$HOME/.local/bin/schedule-shutdown"
+
+while true; do
+  # A dismissed prompt exits nonzero; an empty answer means the same thing.
+  answer=$(omarchy-menu-input "Shut down in hours") || exit 0
+  answer=${answer//[[:space:]]/}
+  [[ -n $answer ]] || exit 0
+
+  # The prompt asks for hours, so a bare number is hours here — 90m and 2h
+  # still pass through for anyone who types a unit.
+  [[ $answer =~ ^[0-9]+(\.[0-9]+)?$ ]] && answer="${answer}h"
+
+  if "$SCHEDULE" "$answer"; then
+    exit 0
+  fi
+
+  omarchy-notification-send -g "$GLYPH" "Invalid duration" "Enter hours, like 3 or 1.5" -u critical
+done

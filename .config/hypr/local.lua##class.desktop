@@ -1,0 +1,26 @@
+-- ── Configuracion especifica del DESKTOP (AenimazZe) ─────────────────────────
+--
+-- Este archivo lo materializa yadm como ~/.config/hypr/local.lua segun el valor
+-- de `yadm config local.class`. NO editar local.lua directamente: se pisa.
+-- Editar SIEMPRE este archivo (local.lua##class.desktop) y correr `yadm alt`.
+
+-- Brillo del monitor externo por DDC/CI.
+-- Esta maquina es un escritorio con un BenQ por DisplayPort: no tiene backlight
+-- interno ni teclas Fn de brillo, asi que se controla con Ctrl + la rueda de
+-- volumen. omarchy-brightness-display detecta solo que el monitor es externo y
+-- habla DDC/CI via ddcutil, ademas de mostrar el OSD.
+o.bind("CTRL + XF86AudioRaiseVolume", "Brightness up", "omarchy-brightness-display +5%", { locked = true, repeating = true })
+o.bind("CTRL + XF86AudioLowerVolume", "Brightness down", "omarchy-brightness-display 5%-", { locked = true, repeating = true })
+
+-- Receptor Logitech Unifying (teclado/mouse inalambricos).
+o.launch_on_start("solaar")
+
+-- Apps que arrancan con la sesion. Su workspace lo fija hypr/windows.lua.
+o.launch_on_start("xdg-terminal-exec")
+o.launch_on_start("zen-browser")
+o.launch_on_start("postman")
+o.launch_on_start("obsidian")
+o.launch_on_start("discord")
+o.launch_on_start("bitwarden-desktop")
+o.launch_on_start("nautilus")
+o.launch_on_start("spotify")

@@ -1,0 +1,108 @@
+#!/bin/bash
+
+# Schedule a system shutdown with a transient systemd user timer.
+# Fires omarchy-system-shutdown so windows close cleanly before poweroff.
+#
+# Usage: schedule-shutdown <duration> | cancel | status
+#   <duration> is 2h, 1.5h, 90m, or a bare number of minutes (90).
+
+set -euo pipefail
+
+UNIT="scheduled-shutdown"
+GLYPH="󰔛"
+
+# A bare number stays minutes so the original minute-only interface — and the
+# 3.x menu that called it that way — keeps working.
+to_minutes() {
+  local raw=${1,,} num unit
+
+  if [[ $raw =~ ^([0-9]+(\.[0-9]+)?)(h|hs|hr|hrs|hour|hours)$ ]]; then
+    num=${BASH_REMATCH[1]} unit=h
+  elif [[ $raw =~ ^([0-9]+(\.[0-9]+)?)(m|min|mins|minute|minutes)?$ ]]; then
+    num=${BASH_REMATCH[1]} unit=m
+  else
+    return 1
+  fi
+
+  awk -v n="$num" -v u="$unit" 'BEGIN { printf "%d", int((u == "h" ? n * 60 : n) + 0.5) }'
+}
+
+# Bare HH:MM reads as today; anything landing on another day says which one,
+# because a custom duration can easily push past midnight.
+pretty_time() {
+  if [[ $(date -d "$1" '+%F') == $(date '+%F') ]]; then
+    date -d "$1" '+%H:%M'
+  else
+    date -d "$1" '+%a %H:%M'
+  fi
+}
+
+scheduled_at() {
+  local at
+  at=$(systemctl --user show "$UNIT.timer" -P NextElapseUSecRealtime 2>/dev/null)
+  [[ -n $at && $at != "n/a" ]] || return 1
+  pretty_time "$at"
+}
+
+clear_unit() {
+  systemctl --user stop "$UNIT.timer" 2>/dev/null || true
+  systemctl --user reset-failed "$UNIT.timer" "$UNIT.service" 2>/dev/null || true
+}
+
+case "${1:-status}" in
+cancel)
+  if at=$(scheduled_at); then
+    clear_unit
+    omarchy-notification-send -g "$GLYPH" "Shutdown cancelled" "Was set for $at"
+  else
+    omarchy-notification-send -g "$GLYPH" "No shutdown scheduled"
+  fi
+  ;;
+
+status)
+  if at=$(scheduled_at); then
+    echo "$at"
+  else
+    exit 1
+  fi
+  ;;
+
+-h | --help | help)
+  cat <<USAGE
+Usage: schedule-shutdown <duration> | cancel | status
+
+  <duration>  2h, 1.5h, 90m, or a bare number of minutes (90)
+  cancel      Drop a pending shutdown
+  status      Print the scheduled time, or exit 1 when nothing is pending
+USAGE
+  ;;
+
+*)
+  if ! minutes=$(to_minutes "$1") || ((minutes < 1)); then
+    echo "schedule-shutdown: invalid duration '$1'" >&2
+    echo "Usage: schedule-shutdown <duration> | cancel | status" >&2
+    echo "  duration: 2h, 1.5h, 90m, or bare minutes (90)" >&2
+    exit 1
+  fi
+
+  when=$(date -d "+$minutes minutes" '+%Y-%m-%d %H:%M:%S')
+
+  # Replace any previously scheduled shutdown
+  clear_unit
+
+  # systemd-run narrates the units it creates on stderr, which is noise here
+  # because the notification below is the actual confirmation. A failure still
+  # has to surface, so report it rather than letting errexit exit quietly.
+  if ! systemd-run --user --unit="$UNIT" \
+    --on-calendar="$when" \
+    --timer-property=AccuracySec=1s \
+    --timer-property=RemainAfterElapse=no \
+    --description="Scheduled shutdown" \
+    "$(command -v omarchy-system-shutdown)" >/dev/null 2>&1; then
+    omarchy-notification-send -g "$GLYPH" "Could not schedule shutdown" "systemd-run failed" -u critical
+    exit 1
+  fi
+
+  omarchy-notification-send -g "$GLYPH" "Shutdown scheduled" "System shuts down at $(pretty_time "$when")"
+  ;;
+esac

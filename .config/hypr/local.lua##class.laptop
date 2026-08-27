@@ -1,0 +1,21 @@
+-- ── Configuracion especifica de la NOTEBOOK (AenimazZe-W) ────────────────────
+--
+-- Este archivo lo materializa yadm como ~/.config/hypr/local.lua segun el valor
+-- de `yadm config local.class`. NO editar local.lua directamente: se pisa.
+-- Editar SIEMPRE este archivo (local.lua##class.laptop) y correr `yadm alt`.
+
+-- Brillo: la notebook tiene backlight interno y Omarchy ya lo maneja con las
+-- teclas Fn por defecto. Por eso aca NO van los binds de Ctrl + rueda que usa
+-- el escritorio: sobre eDP-1 no harian falta.
+
+-- Apps que arrancan con la sesion. Su workspace lo fija hypr/windows.lua.
+o.launch_on_start("xdg-terminal-exec")
+o.launch_on_start("zen-browser")
+o.launch_on_start("beekeeper-studio")
+o.launch_on_start("obsidian")
+o.launch_on_start("bitwarden-desktop")
+
+-- Slack: todavia no esta instalado en ninguna de las dos maquinas.
+-- Instalarlo con:  omarchy pkg aur add slack-desktop
+-- y despues descomentar la linea de abajo.
+-- o.launch_on_start("slack")

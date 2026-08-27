@@ -15,6 +15,8 @@
 /*
 !/.gitignore
 !/README.md
+# Como migrar una maquina de Omarchy 3.x a 4 (quattro).
+!/MIGRACION-OMARCHY-4.md
 # Script de instalación en una máquina nueva. Vive en la raíz del repo para que
 # la URL de raw sea corta y se pueda correr con un curl de una línea.
 !/bootstrap.sh
@@ -29,15 +31,18 @@
 /.config/*
 
 # --- Escritorio: Hyprland y compañía ---
+# Desde Omarchy 4 la config de Hyprland es Lua: hyprland.lua carga los defaults
+# del paquete y despues estos modulos. Los .conf que quedan los leen otros
+# procesos (hyprsunset, xdg-desktop-portal-hyprland), no Hyprland.
 !/.config/hypr
-.config/hypr/local/
+# local.lua lo materializa yadm desde local.lua##class.<desktop|laptop>.
+.config/hypr/local.lua
+# Generado por Omarchy para el LSP de Lua.
+.config/hypr/.luarc.json
 # Verificados idénticos (o anteriores) al default de Omarchy: trackearlos
 # congelaría defaults viejos y le impediría a Omarchy actualizarlos.
-.config/hypr/hypridle.conf
 .config/hypr/hyprsunset.conf
 .config/hypr/xdph.conf
-!/.config/waybar
-!/.config/walker
 !/.config/omarchy
 .config/omarchy/current/
 .config/omarchy/themes/
@@ -48,7 +53,9 @@
 !/.config/ghostty
 !/.config/alacritty
 !/.config/tmux
-!/.config/xdg-terminals.list
+# xdg-terminals.list no se versiona: en Omarchy 4 lo genera
+# `omarchy default terminal ghostty`, que bootstrap.sh ya corre.
+.config/xdg-terminals.list
 
 # --- Herramientas de línea de comandos ---
 !/.config/git
@@ -99,12 +106,13 @@
 !/.agents/skills
 
 # ============================== ~/.local/bin =======================
-# Sólo los dos scripts propios. El resto son 240 MB de binarios.
+# Sólo los scripts propios. El resto son 240 MB de binarios.
 !/.local
 /.local/*
 !/.local/bin
 /.local/bin/*
-!/.local/bin/omarchy-brightness-ddc
+!/.local/bin/schedule-shutdown
+!/.local/bin/schedule-shutdown-prompt
 !/.local/bin/tmux-smooth-zoom
 
 # ============================== Cortes transversales ===============

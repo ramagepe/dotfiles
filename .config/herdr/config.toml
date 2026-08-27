@@ -1,0 +1,140 @@
+onboarding = false
+
+# ─────────────────────────────────────────────────────────────────────────────
+# Notificaciones
+# ─────────────────────────────────────────────────────────────────────────────
+# "system" = notificaciones nativas del escritorio (el shell de Omarchy).
+# Herdr las suprime cuando el tab en cuestión ya está enfocado, así que
+# solo interrumpen cuando de verdad no estás mirando.
+[ui.toast]
+delivery = "system"
+delay_seconds = 1
+
+# ─────────────────────────────────────────────────────────────────────────────
+# Sidebar
+# ─────────────────────────────────────────────────────────────────────────────
+# $provider / $limit / $context los aporta el plugin usagebar.
+# Si lo desinstalás, esas filas quedan vacías: borrá el bloque entero.
+[ui.sidebar.agents]
+row_gap = 0
+rows = [
+  ["state_icon", "workspace", "tab"],
+  ["$provider", "$limit"],
+  ["$context"],
+]
+
+# ─────────────────────────────────────────────────────────────────────────────
+# Navegación Vim ↔ herdr (plugin vim-herdr-navigation)
+# ─────────────────────────────────────────────────────────────────────────────
+# Ctrl+h/j/k/l mueve entre splits de Neovim y, al llegar al borde, cruza al
+# pane vecino de herdr. Requiere jq (presente) y el lado del editor en
+# ~/.config/nvim (ver herdr-navigation.lua).
+#
+# COSTO ACEPTADO: ctrl+l ya no limpia la pantalla y ctrl+j/ctrl+k pierden su
+# función de readline en el shell. Para revertir, borrá estos cuatro bloques.
+[[keys.command]]
+key = "ctrl+h"
+type = "plugin_action"
+command = "vim-herdr-navigation.left"
+description = "navegar izquierda (vim/herdr)"
+
+[[keys.command]]
+key = "ctrl+j"
+type = "plugin_action"
+command = "vim-herdr-navigation.down"
+description = "navegar abajo (vim/herdr)"
+
+[[keys.command]]
+key = "ctrl+k"
+type = "plugin_action"
+command = "vim-herdr-navigation.up"
+description = "navegar arriba (vim/herdr)"
+
+[[keys.command]]
+key = "ctrl+l"
+type = "plugin_action"
+command = "vim-herdr-navigation.right"
+description = "navegar derecha (vim/herdr)"
+
+# ─────────────────────────────────────────────────────────────────────────────
+# Acciones de plugins
+# ─────────────────────────────────────────────────────────────────────────────
+# Todas en prefix+shift+<letra>: los defaults de herdr viven en prefix+<letra>,
+# así que este rango es el único seguro. `prefix+?` lista los bindings activos.
+
+[[keys.command]]
+key = "prefix+shift+l"
+type = "plugin_action"
+command = "herdr-lazy.manage"
+description = "gestionar plugins"
+
+[[keys.command]]
+key = "prefix+shift+m"
+type = "plugin_action"
+command = "caioniehues.herdmates.open-pane-board"
+description = "herdmates: mission control"
+
+[[keys.command]]
+key = "prefix+shift+v"
+type = "plugin_action"
+command = "persiyanov.reviewr.toggle"
+description = "reviewr: sidebar de code review"
+
+[[keys.command]]
+key = "prefix+shift+f"
+type = "plugin_action"
+command = "herdr-file-viewer.open-file-viewer"
+description = "visor de archivos git-aware"
+
+[[keys.command]]
+key = "prefix+shift+e"
+type = "plugin_action"
+command = "ray.file-explorer.open"
+description = "yazi: explorador de archivos"
+
+[[keys.command]]
+key = "prefix+shift+c"
+type = "plugin_action"
+command = "herdr-lazygit.open"
+description = "lazygit"
+
+[[keys.command]]
+key = "prefix+shift+j"
+type = "plugin_action"
+command = "herdr-navigator.open"
+description = "navigator: fuzzy jump"
+
+[[keys.command]]
+key = "prefix+shift+z"
+type = "plugin_action"
+command = "herdr-zoxide.browse"
+description = "zoxide: saltar por directorios"
+
+[[keys.command]]
+key = "prefix+shift+s"
+type = "plugin_action"
+command = "herdr-spreader.apply"
+description = "spreader: aplicar layout YAML"
+
+[[keys.command]]
+key = "prefix+shift+u"
+type = "plugin_action"
+command = "usagebar.open-limits"
+description = "uso: contexto y rate limits"
+
+# ─────────────────────────────────────────────────────────────────────────────
+# Agent Handoff — escrito por el propio plugin (herdr plugin action setup-keys)
+# ─────────────────────────────────────────────────────────────────────────────
+# Pasa la tarea en curso a otro agente instalado, arrastrando la sesión completa.
+
+[[keys.command]]
+key = "prefix+a"
+type = "plugin_action"
+command = "agent-handoff.handoff-split"
+description = "handoff a otro agente (split)"
+
+[[keys.command]]
+key = "prefix+shift+a"
+type = "plugin_action"
+command = "agent-handoff.handoff-tab"
+description = "handoff a otro agente (nuevo tab)"

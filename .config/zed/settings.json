@@ -1,0 +1,52 @@
+// Zed settings
+//
+// For information on how to configure Zed, see the Zed
+// documentation: https://zed.dev/docs/configuring-zed
+//
+// To see all of Zed's default settings without changing your
+// custom settings, run `zed: open default settings` from the
+// command palette (cmd-shift-p / ctrl-shift-p)
+{
+  "project_panel": {
+    "dock": "left"
+  },
+  "outline_panel": {
+    "dock": "right"
+  },
+  "collaboration_panel": {
+    "dock": "right"
+  },
+  "git_panel": {
+    "dock": "right"
+  },
+  "agent_servers": {
+    "claude-acp": {
+      "type": "registry"
+    }
+  },
+  "agent": {
+    "dock": "right",
+    "default_profile": "ask",
+    "default_model": {
+      "provider": "zed.dev",
+      "model": "claude-sonnet-4-5-thinking"
+    },
+    "model_parameters": []
+  },
+  "terminal": {
+    "dock": "bottom"
+  },
+  "icon_theme": {
+    "mode": "system",
+    "light": "Zed (Default)",
+    "dark": "Material Icon Theme"
+  },
+  "vim_mode": false,
+  "ui_font_size": 16,
+  "buffer_font_size": 15,
+  "theme": {
+    "mode": "system",
+    "light": "One Light",
+    "dark": "Tokyo Night Storm"
+  }
+}

@@ -43,7 +43,7 @@ say "Respaldando la configuracion actual"
 TS=$(date +%Y%m%d-%H%M%S)
 BACKUP="$HOME/.config-backup-$TS"
 mkdir -p "$BACKUP"
-for d in hypr waybar walker mako alacritty ghostty kitty; do
+for d in hypr omarchy alacritty ghostty kitty; do
   [[ -d "$HOME/.config/$d" ]] && cp -r "$HOME/.config/$d" "$BACKUP/" 2>/dev/null
 done
 echo "   copia en: $BACKUP"
@@ -68,9 +68,32 @@ echo "   local.class = $(yadm config local.class)"
 say "Aplicando los dotfiles"
 yadm checkout -- "$HOME" 2>/dev/null || yadm checkout "$HOME" || die "fallo el checkout"
 yadm alt
-echo "   local.conf -> $(readlink -f "$HOME/.config/hypr/local.conf" 2>/dev/null | xargs -r basename)"
+echo "   local.lua -> $(readlink -f "$HOME/.config/hypr/local.lua" 2>/dev/null | xargs -r basename)"
 
-# ── 7 · Que paquetes le faltan a la configuracion ────────────────────────────
+# ── 7 · Ajustes que en Omarchy 4 no viven en un dotfile ──────────────────────
+# Estos dos los guarda el sistema, no el repo: hay que pedirlos por comando.
+say "Aplicando preferencias del sistema"
+
+# Terminal por defecto de xdg-terminal-exec (antes: ~/.config/xdg-terminals.list)
+if command -v ghostty &>/dev/null; then
+  omarchy default terminal ghostty >/dev/null 2>&1 &&
+    echo "   terminal por defecto: ghostty" ||
+    warn "no pude fijar ghostty como terminal por defecto"
+else
+  warn "ghostty no esta instalado; el terminal por defecto queda como este"
+fi
+
+# Layout de teclado us,latam. Omarchy 4 lo lee de /etc/vconsole.conf; el toggle
+# (Alt izq + Alt der) lo agrega ~/.config/hypr/input.lua.
+if [[ $(. /etc/vconsole.conf 2>/dev/null; echo "${XKBLAYOUT:-}") != "us,latam" ]]; then
+  sudo localectl --no-convert set-x11-keymap "us,latam" "pc105+inet" "" "terminate:ctrl_alt_bksp" &&
+    echo "   layout de teclado: us,latam (Alt izq + Alt der para alternar)" ||
+    warn "no pude fijar el layout de teclado"
+else
+  echo "   layout de teclado: us,latam"
+fi
+
+# ── 8 · Que paquetes le faltan a la configuracion ────────────────────────────
 say "Paquetes que tu configuracion necesita y no estan"
 DEPS="$HOME/.config/omarchy/packages-config-deps.txt"
 if [[ -f $DEPS ]]; then
@@ -89,7 +112,7 @@ else
   warn "no encontre $DEPS"
 fi
 
-# ── 8 · Aplicar en caliente ──────────────────────────────────────────────────
+# ── 9 · Aplicar en caliente ──────────────────────────────────────────────────
 say "Recargando"
 if command -v hyprctl &>/dev/null && [[ -n ${HYPRLAND_INSTANCE_SIGNATURE:-} ]]; then
   hyprctl reload >/dev/null && echo "   hyprland recargado"
@@ -99,7 +122,7 @@ if command -v hyprctl &>/dev/null && [[ -n ${HYPRLAND_INSTANCE_SIGNATURE:-} ]]; 
   else
     echo "   sin errores de configuracion"
   fi
-  command -v omarchy &>/dev/null && omarchy restart waybar >/dev/null 2>&1 && echo "   waybar reiniciada"
+  command -v omarchy &>/dev/null && omarchy restart shell >/dev/null 2>&1 && echo "   omarchy shell reiniciado"
 else
   warn "no estas dentro de Hyprland: cerra sesion y volve a entrar para aplicar todo"
 fi
