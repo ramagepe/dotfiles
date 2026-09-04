@@ -28,7 +28,6 @@ Desde Omarchy 4 la config es Lua: `hyprland.lua` carga los defaults del paquete 
 | Archivo | Descripcion |
 |---|---|
 | `omarchy/shell.json` | Barra de Quickshell: layout de widgets, posicion, tiempos de idle |
-| `omarchy/shell.toml` | Tamaño de fuente del shell |
 | `omarchy/extensions/omarchy-menu.jsonc` | Submenu "Schedule Shutdown" en System, y modos de proyeccion (Dual / Laptop only / External only / Mirror) en Hardware |
 | `omarchy/hooks/post-update.d/setup-agent.hook` | Invitacion a elegir agente por defecto tras un update |
 | `omarchy/branding/about.txt` | ASCII art logo custom |
@@ -178,6 +177,7 @@ El archivo `~/.claude.json` esta excluido completamente (contiene estado efimero
 - Temas (`~/.config/omarchy/themes/`) — se instalan con `omarchy theme set <nombre>`
 - `~/.config/hypr/local.lua` — lo materializa `yadm alt` desde el `##class.*` que corresponda
 - `~/.config/hypr/monitors.lua` — estado de cada maquina; lo reescribe Omarchy al cambiar la escala (`SUPER + SLASH`). El layout de pantallas que si es propio vive en `local.lua##class.*`, que se carga despues
+- `~/.config/omarchy/shell.toml` — tamaño de fuente del shell: una de las tres cosas que mueve `omarchy display text size`, y depende de la densidad de cada pantalla
 - `~/.config/hypr/.luarc.json` — lo genera Omarchy para el LSP de Lua
 - `~/.config/xdg-terminals.list` — lo genera `omarchy default terminal`
 - `hyprsunset.conf` y `xdph.conf` — identicos al default de Omarchy; trackearlos congelaria defaults viejos

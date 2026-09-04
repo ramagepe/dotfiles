@@ -69,7 +69,31 @@ El layout se lee de `/etc/vconsole.conf` (`XKBLAYOUT`). Omarchy **no** hereda
 **Alt izquierdo + Alt derecho**, y el widget de la barra tambien lo cicla al
 click.
 
-### 4. Borrar la config muerta
+### 4. Ajustar el tamaño de texto a esta pantalla
+
+Omarchy 4 tiene **una sola perilla** para el tamaño de texto de todo el
+escritorio, y mueve tres cosas en simultaneo:
+
+```bash
+omarchy display text size          # muestra las tres
+omarchy display text size 14       # las cambia juntas (9 a 20 px)
+```
+
+|  | Donde vive | Viaja en el repo |
+|---|---|---|
+| Fuente del shell/barra | `~/.config/omarchy/shell.toml` | no |
+| Fuente de los terminales | `alacritty` / `ghostty` / `kitty` | **si** |
+| `text-scaling-factor` de GTK | gsettings (dconf) | no |
+
+Depende de la densidad de la pantalla, no de la resolucion: el BenQ de 27" del
+escritorio son ~82 PPI y el panel de 15.6" de la notebook ~141 PPI, asi que el
+mismo numero se ve bastante mas chico en la notebook. Correr el comando en cada
+maquina hasta que se vea bien.
+
+Como el font-size de los terminales si esta versionado, ajustarlo deja un diff
+local que **no hay que commitear**: es el valor de la otra maquina.
+
+### 5. Borrar la config muerta
 
 Ya no la lee nadie, y confunde al buscar por que algo no anda:
 
@@ -87,7 +111,7 @@ Sobreviven solo dos `.conf`, porque los leen **otros** procesos y no Hyprland:
 > staged, recrea el symlink apuntando a un archivo que ya no existe. Queda un
 > enlace roto que hay que borrar de nuevo.
 
-### 5. Verificar
+### 6. Verificar
 
 ```bash
 hyprctl reload && hyprctl configerrors      # tiene que salir vacio

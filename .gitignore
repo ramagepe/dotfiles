@@ -48,6 +48,11 @@
 .config/hypr/hyprsunset.conf
 .config/hypr/xdph.conf
 !/.config/omarchy
+# shell.toml solo guarda el tamaño de fuente del shell, que es una de las tres
+# cosas que mueve `omarchy display text size` (las otras son el font-size de los
+# terminales y el text-scaling-factor de GTK). Depende de la densidad de cada
+# pantalla, asi que se ajusta por maquina y no se versiona.
+.config/omarchy/shell.toml
 .config/omarchy/current/
 .config/omarchy/themes/
 .config/omarchy/branding/screensaver-backup.txt
