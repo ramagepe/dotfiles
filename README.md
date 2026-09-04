@@ -20,17 +20,16 @@ Desde Omarchy 4 la config es Lua: `hyprland.lua` carga los defaults del paquete 
 | `hypr/looknfeel.lua` | Tab bar de grupos oculta, auto-group de Ghostty, sin warp del cursor |
 | `hypr/windows.lua` | Cada app a su workspace (zen, postman, obsidian, discord, etc.) |
 | `hypr/bindings.lua` | Cerrar con SUPER+Q, foco con HJKL, full width en SUPER+TAB, ALT+TAB dentro del grupo, barra en SUPER+B |
-| `hypr/monitors.lua` | Escalado del monitor |
 | `hypr/autostart.lua` | Procesos extra al iniciar |
 | `hypr/local.lua##class.desktop` | **Especifico del escritorio**: brillo por DDC/CI, solaar, 8 apps de autostart |
-| `hypr/local.lua##class.laptop` | **Especifico de la notebook**: 5 apps de autostart, sin binds de DDC |
+| `hypr/local.lua##class.laptop` | **Especifico de la notebook**: pantallas a 1x con el BenQ fijo a la derecha, modo "solo notebook" (Super+Ctrl+Shift+Delete), solaar para corregir el perfil onboard del G203, 5 apps de autostart, sin binds de DDC |
 
 ### Omarchy
 | Archivo | Descripcion |
 |---|---|
 | `omarchy/shell.json` | Barra de Quickshell: layout de widgets, posicion, tiempos de idle |
 | `omarchy/shell.toml` | Tamaño de fuente del shell |
-| `omarchy/extensions/omarchy-menu.jsonc` | Submenu "Schedule Shutdown" dentro de System |
+| `omarchy/extensions/omarchy-menu.jsonc` | Submenu "Schedule Shutdown" en System, y modos de proyeccion (Dual / Laptop only / External only / Mirror) en Hardware |
 | `omarchy/hooks/post-update.d/setup-agent.hook` | Invitacion a elegir agente por defecto tras un update |
 | `omarchy/branding/about.txt` | ASCII art logo custom |
 | `omarchy/branding/screensaver.txt` | Banner ASCII |
@@ -70,6 +69,13 @@ Config completa basada en LazyVim con plugins custom (obsidian, diffview, navega
 | `schedule-shutdown` | Apagado programado con un timer de systemd; se expone en el menu de Omarchy |
 | `schedule-shutdown-prompt` | Dialogo para elegir las horas |
 | `tmux-smooth-zoom` | Zoom de panes sin saltos |
+| `monitor-external-toggle` | Apaga/prende los monitores externos (modo "solo notebook"), el caso que Omarchy no cubre |
+| `power-profile-low-battery` | Tercer escalon de energia: `power-saver` con bateria baja (Omarchy solo cubre AC y bateria) |
+
+### Systemd
+| Archivo | Descripcion |
+|---|---|
+| `systemd/user/power-profile-low-battery.{service,timer}` | Pasa a `power-saver` con la bateria <= 20%. Habilitar con `systemctl --user enable --now power-profile-low-battery.timer` |
 
 ## Restaurar en instalacion nueva
 
@@ -171,6 +177,7 @@ El archivo `~/.claude.json` esta excluido completamente (contiene estado efimero
 
 - Temas (`~/.config/omarchy/themes/`) — se instalan con `omarchy theme set <nombre>`
 - `~/.config/hypr/local.lua` — lo materializa `yadm alt` desde el `##class.*` que corresponda
+- `~/.config/hypr/monitors.lua` — estado de cada maquina; lo reescribe Omarchy al cambiar la escala (`SUPER + SLASH`). El layout de pantallas que si es propio vive en `local.lua##class.*`, que se carga despues
 - `~/.config/hypr/.luarc.json` — lo genera Omarchy para el LSP de Lua
 - `~/.config/xdg-terminals.list` — lo genera `omarchy default terminal`
 - `hyprsunset.conf` y `xdph.conf` — identicos al default de Omarchy; trackearlos congelaria defaults viejos

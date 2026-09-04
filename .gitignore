@@ -37,6 +37,10 @@
 !/.config/hypr
 # local.lua lo materializa yadm desde local.lua##class.<desktop|laptop>.
 .config/hypr/local.lua
+# monitors.lua es estado de cada maquina y lo reescribe Omarchy cuando se
+# cambia la escala (SUPER + SLASH / omarchy-hyprland-monitor-scaling). El layout
+# de pantallas que si es propio vive en local.lua##class.*, que se carga despues.
+.config/hypr/monitors.lua
 # Generado por Omarchy para el LSP de Lua.
 .config/hypr/.luarc.json
 # Verificados idénticos (o anteriores) al default de Omarchy: trackearlos
@@ -90,6 +94,12 @@
 /.config/gtk-3.0/*
 !/.config/gtk-3.0/bookmarks
 
+# --- Servicios de usuario ---
+# Los *.wants son el estado que genera `systemctl --user enable`, no
+# configuracion: las unidades se habilitan a mano en cada maquina.
+!/.config/systemd
+.config/systemd/user/*.wants/
+
 # --- yadm: bootstrap, encrypt, alternates ---
 !/.config/yadm
 
@@ -114,6 +124,8 @@
 !/.local/bin/schedule-shutdown
 !/.local/bin/schedule-shutdown-prompt
 !/.local/bin/tmux-smooth-zoom
+!/.local/bin/monitor-external-toggle
+!/.local/bin/power-profile-low-battery
 
 # ============================== Cortes transversales ===============
 # Valen dentro de cualquier directorio habilitado arriba.

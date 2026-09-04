@@ -28,6 +28,11 @@
   // fields are kept unless overridden.
   // "about": {"icon":"","label":"About","action":"omarchy-launch-or-focus-tui \"zsh -c 'fastfetch; read -k 1'\""},
 
+  // Boot to Windows — arranque unico por UEFI BootNext. El script pide sudo,
+  // asi que necesita una terminal visible; la fila desaparece en la maquina
+  // que no tenga el script, porque ~/code no se migra entre equipos.
+  "system.boot-to-windows": {"icon":"󰖳","label":"Boot to Windows","description":"Set the next boot to Windows, once","when":"[[ -x $HOME/code/scripts/boot-to-windows ]]","action":"omarchy-launch-floating-terminal-with-presentation $HOME/code/scripts/boot-to-windows"},
+
   // Schedule Shutdown — backed by ~/.local/bin/schedule-shutdown, which arms a
   // transient systemd user timer that fires omarchy-system-shutdown. The parent
   // row shows a ✓ while a shutdown is pending; Cancel only appears then.
@@ -36,5 +41,38 @@
   "system.schedule.2h": {"icon":"󰀠","label":"In 2 hours","action":"$HOME/.local/bin/schedule-shutdown 2h"},
   "system.schedule.4h": {"icon":"󰀠","label":"In 4 hours","action":"$HOME/.local/bin/schedule-shutdown 4h"},
   "system.schedule.6h": {"icon":"󰀠","label":"In 6 hours","action":"$HOME/.local/bin/schedule-shutdown 6h"},
-  "system.schedule.custom": {"icon":"󰀠","label":"Custom…","description":"Enter the number of hours","action":"$HOME/.local/bin/schedule-shutdown-prompt"}
+  "system.schedule.custom": {"icon":"󰀠","label":"Custom…","description":"Enter the number of hours","action":"$HOME/.local/bin/schedule-shutdown-prompt"},
+
+  // Shutdown al final. El merge del menu conserva la posicion de los ids que ya
+  // existen y empuja los nuevos al fondo, asi que la unica forma de meter filas
+  // propias por encima de Shutdown es ocultar el original y volver a crearlo
+  // aca abajo, despues de ellas.
+  "system.shutdown": {"when":"false"},
+  "system.power-off": {"icon":"󰐥","label":"Shutdown","aliases":["shutdown","power-off"],"action":"omarchy-system-shutdown"}
+,
+
+  // ── Modos de proyeccion (notebook) ──────────────────────────────────────────
+  // Omarchy expone dos toggles sueltos, "Laptop Display" y "Mirror Display", que
+  // obligan a deducir que va a hacer cada uno segun el estado actual. Cuando hay
+  // un monitor externo conectado los reemplazamos por un submenu con los cuatro
+  // modos nombrados, con una tilde en el que ya esta activo.
+  //
+  // Los `when` los ocultan donde no aplican: este archivo lo comparten las dos
+  // maquinas, y en el escritorio no hay panel interno al cual volver. Sin monitor
+  // externo los cuatro modos no aportan nada y alcanzan los toggles de Omarchy.
+  //
+  // Cada modo se arma desde cualquier estado anterior, por eso apaga los otros
+  // toggles antes. Los comandos son idempotentes y silenciosos cuando ya estan
+  // en el estado pedido, asi que encadenarlos no genera notificaciones de mas.
+  "trigger.hardware.displays": {"icon":"󰍺","label":"Displays","description":"Modos de proyeccion","aliases":["displays"],"when":"omarchy-hw-laptop && omarchy-hw-external-monitors"},
+  "trigger.hardware.displays.dual": {"icon":"󰍺","label":"Dual","checked":"! omarchy-hyprland-toggle-enabled internal-monitor-mirror && ! omarchy-hyprland-toggle-enabled internal-monitor-disable && ! omarchy-hyprland-toggle-enabled external-monitor-disable","action":"omarchy-hyprland-monitor-internal-mirror off; monitor-external-toggle on; omarchy-hyprland-monitor-internal on"},
+  "trigger.hardware.displays.laptop": {"icon":"󰛧","label":"Laptop only","checked":"omarchy-hyprland-toggle-enabled external-monitor-disable","action":"omarchy-hyprland-monitor-internal-mirror off; omarchy-hyprland-monitor-internal on; monitor-external-toggle off"},
+  "trigger.hardware.displays.external": {"icon":"󰍹","label":"External only","checked":"omarchy-hyprland-toggle-enabled internal-monitor-disable","action":"omarchy-hyprland-monitor-internal-mirror off; monitor-external-toggle on; omarchy-hyprland-monitor-internal off"},
+  "trigger.hardware.displays.mirror": {"icon":"󰆏","label":"Mirror","checked":"omarchy-hyprland-toggle-enabled internal-monitor-mirror","action":"monitor-external-toggle on; omarchy-hyprland-monitor-internal-mirror on"},
+
+  // Los dos toggles de Omarchy quedan solo cuando NO hay monitor externo: con uno
+  // conectado, el submenu de arriba los reemplaza. Reusar sus ids extiende la
+  // entrada original en vez de duplicarla.
+  "trigger.hardware.laptop-display": {"when":"omarchy-hw-laptop && ! omarchy-hw-external-monitors"},
+  "trigger.hardware.mirror-display": {"when":"omarchy-hw-laptop && ! omarchy-hw-external-monitors"}
 }

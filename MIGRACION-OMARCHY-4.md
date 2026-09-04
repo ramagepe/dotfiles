@@ -141,6 +141,30 @@ Dos reglas que ahorran tiempo:
   correcta es `require("default.hypr.require_optional").module("hypr.local")`,
   no un `require` pelado.
 
+## Los toggles de Hyprland tambien pasaron a Lua
+
+`~/.local/state/omarchy/toggles/hypr/` es un directorio que Hyprland carga
+entero al final de su config, y sirve para estado que tiene que sobrevivir a
+los `hyprctl reload` que Omarchy dispara solo. En 3.x eran archivos `.conf`; en
+4 son **`.lua`**, y `default/hypr/toggles.lua` hace `require_all` **solo de los
+`.lua`**: un `.conf` que quede ahi no lo lee nadie.
+
+Un script propio que escriba uno de esos flags hay que actualizarlo:
+
+```bash
+# antes (3.x)
+printf 'monitor=%s,disable\n' "$monitor" >> "$FLAG"      # FLAG=...disable.conf
+
+# ahora (4)
+printf 'hl.monitor({ output = "%s", disabled = true })\n' "$monitor" >> "$FLAG"   # .lua
+```
+
+Para consultarlos, Omarchy expone `omarchy-hyprland-toggle-enabled <flag>` y
+`omarchy-hyprland-toggle-disabled <flag>`, mejor que mirar si el archivo existe.
+
+Y para notificar, `omarchy-notification-send -g <icono> "titulo" "cuerpo"`
+respeta el silenciado de notificaciones; `notify-send` a secas no.
+
 ## Trampa aparte: `bash: hash: hashing disabled`
 
 Aparece en cada terminal nueva y **no la causa el update** — el `set +h` de

@@ -4,9 +4,50 @@
 -- de `yadm config local.class`. NO editar local.lua directamente: se pisa.
 -- Editar SIEMPRE este archivo (local.lua##class.laptop) y correr `yadm alt`.
 
+-- ── Pantallas ───────────────────────────────────────────────────────────────
+-- El panel interno es un 1920x1080 de 15.6" (~141 PPI) y el BenQ GW2780 que
+-- entra por HDMI es un 1920x1080 de 27": ninguno de los dos es retina-class,
+-- asi que los dos van a escala 1.
+--
+-- Con escalas distintas en cada pantalla las ventanas cambiaban de tamaño al
+-- pasar de una a otra: 1x en ambas lo evita y ademas no usa escalado fraccional.
+hl.env("GDK_SCALE", "1")
+
+-- Regla general, para cualquier pantalla que no este contemplada abajo.
+hl.monitor({ output = "", mode = "preferred", position = "auto", scale = 1 })
+
+-- Layout fijo del puesto de trabajo: el BenQ va a la DERECHA de la notebook.
+-- Con `auto` la posicion depende del orden en que se activan los monitores, asi
+-- que al ciclar los modos de proyeccion (solo notebook -> dual, solo HDMI ->
+-- dual) el BenQ se pasaba solo al lado izquierdo y el mouse cruzaba al reves.
+hl.monitor({ output = "eDP-1", mode = "1920x1080@60", position = "0x0", scale = 1 })
+hl.monitor({ output = "HDMI-A-1", mode = "1920x1080@60", position = "1920x0", scale = 1 })
+
+-- Tercer modo de proyeccion: "solo notebook" (apaga los externos). Completa la
+-- familia que ya trae Omarchy:
+--   SUPER+CTRL+Delete        -> solo externo (apaga el panel interno)
+--   SUPER+CTRL+ALT+Delete    -> espejo
+--   SUPER+SHIFT+CTRL+Delete  -> solo notebook  (este)
+-- El bind vive aca y no en bindings.lua porque en el escritorio no hay panel
+-- interno al cual volver.
+o.bind("SUPER + SHIFT + CTRL + Delete", "Toggle external displays", "monitor-external-toggle toggle")
+
+-- "Solo notebook" es un modo temporal: se limpia al iniciar sesion para no
+-- arrancar nunca con un monitor apagado sin darse cuenta.
+o.exec_on_start("$HOME/.local/bin/monitor-external-toggle reset")
+
 -- Brillo: la notebook tiene backlight interno y Omarchy ya lo maneja con las
 -- teclas Fn por defecto. Por eso aca NO van los binds de Ctrl + rueda que usa
 -- el escritorio: sobre eDP-1 no harian falta.
+
+-- ── Perifericos ─────────────────────────────────────────────────────────────
+-- El Logitech G203 trae un perfil grabado en su memoria interna (hecho con
+-- G HUB) que deja el click izquierdo mapeado a un boton lateral. Solaar lo
+-- corrige poniendo el mouse en "Device Mode: Host" (onboard_profiles disabled,
+-- guardado en ~/.config/solaar/config.yaml), pero es un ajuste de sesion: se
+-- pierde al desconectar el mouse, al suspender o al reiniciar. Por eso solaar
+-- tiene que quedar corriendo para reaplicarlo.
+o.launch_on_start("solaar --window=hide --restart-on-wake-up")
 
 -- Apps que arrancan con la sesion. Su workspace lo fija hypr/windows.lua.
 o.launch_on_start("xdg-terminal-exec")
@@ -15,7 +56,7 @@ o.launch_on_start("beekeeper-studio")
 o.launch_on_start("obsidian")
 o.launch_on_start("bitwarden-desktop")
 
--- Slack: todavia no esta instalado en ninguna de las dos maquinas.
--- Instalarlo con:  omarchy pkg aur add slack-desktop
--- y despues descomentar la linea de abajo.
+-- Slack ya esta instalado (slack-desktop-wayland), pero a proposito no arranca
+-- con la sesion: se abre a mano cuando hace falta. Para que arranque solo,
+-- descomentar la linea de abajo.
 -- o.launch_on_start("slack")

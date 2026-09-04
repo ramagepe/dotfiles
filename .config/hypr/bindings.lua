@@ -44,3 +44,16 @@ o.bind("ALT + SHIFT + TAB", "Previous window in group", hl.dsp.group.prev())
 -- ── Barra ───────────────────────────────────────────────────────────────────
 -- Se suma a SUPER + SHIFT + SPACE, que sigue siendo el default de Omarchy.
 o.bind_toggle("SUPER + B", "Toggle top bar", "bar")
+
+-- ── Obsidian ────────────────────────────────────────────────────────────────
+-- El default de Omarchy busca la ventana con "^obsidian$", pero Obsidian paso
+-- su app-id a md.obsidian.Obsidian y ese patron ya no la encuentra, asi que
+-- lanzaba en lugar de enfocar. El workspace lo fija hypr/windows.lua.
+hl.unbind("SUPER + SHIFT + O")
+o.bind("SUPER + SHIFT + O", "Obsidian", { launch = "obsidian", focus = "obsidian" })
+
+-- ── Gestor de contraseñas ───────────────────────────────────────────────────
+-- Omarchy apunta SUPER + SHIFT + / a 1Password, que no esta instalado en
+-- ninguna de las dos maquinas: el gestor es Bitwarden.
+hl.unbind("SUPER + SHIFT + SLASH")
+o.bind("SUPER + SHIFT + SLASH", "Passwords", { launch = "bitwarden-desktop", focus = "Bitwarden" })
